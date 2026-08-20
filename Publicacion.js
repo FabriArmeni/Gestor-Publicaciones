@@ -2,13 +2,13 @@ export default class Publicacion {
     constructor(titulo, descripcion, autor) {
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.autor = autor;
+        this.autor = autor; // objeto Usuario
         this.fechaPublicacion = new Date();
         this.activa = true;
     }
 
     mostrarResumen() {
-        return `Titulo: "${this.titulo}" por ${this.autor}`;
+        return `Titulo: "${this.titulo}" por ${this.autor.nombre}`;
     }
 
     estaActiva(){
