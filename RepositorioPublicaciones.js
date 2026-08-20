@@ -1,8 +1,7 @@
 class RepositorioPublicaciones {
     constructor(){
-
+        this.publicaciones = [] //arreglo de objetos Publicacion
     }
-    publicaciones = [] //arreglo de objetos Publicacion
 
     agregar(publicacion) { //publicacion: objeto Publicacion
         this.publicaciones.push(publicacion)
