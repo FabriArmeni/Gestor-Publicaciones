@@ -3,8 +3,8 @@ import Publicacion from "./Publicacion.js";
 class PublicacionServicio extends Publicacion {
     constructor(titulo,descripcion, autor, modalidad, duracionMinutos) {
         super(titulo, descripcion, autor)
-        this.modalidad = modalidad
-        this.duracionMinutos = duracionMinutos
+        this.modalidad = modalidad // "presencial" o "virtual"
+        this.duracionMinutos = duracionMinutos // number
     }
 }
 

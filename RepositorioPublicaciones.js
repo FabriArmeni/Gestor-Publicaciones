@@ -18,6 +18,10 @@ class RepositorioPublicaciones {
     cantidadTotal() {
         return this.publicaciones.length
     }
+
+    listarPorTipo(claseConstructor) {
+        return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
+    }
 }
 
 export default RepositorioPublicaciones

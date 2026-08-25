@@ -60,3 +60,12 @@ console.log(repositorio.filtrarActivas())
 // parte 4 desafio 2
 console.log("------------------------");
 console.log("Cantidad de publicaciones: ", repositorio.cantidadTotal());
+
+
+//Practica 3: parte 4
+// Desafío: agreguen un método listarPorTipo(claseConstructor) que devuelva solo las 
+// publicaciones que son instancia de esa clase, usando instanceof.
+console.log("=".repeat(30));
+console.log("publicaciones de venta: ", repositorio.listarPorTipo(PublicacionVenta))
+
+console.log("publicaciones de servicio: ", repositorio.listarPorTipo(PublicacionServicio))
