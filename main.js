@@ -1,4 +1,6 @@
 import Publicacion from "./Publicacion.js";
+import PublicacionServicio from "./PublicacionServicio.js";
+import PublicacionVenta from "./PublicacionVenta.js";
 import RepositorioPublicaciones from "./RepositorioPublicaciones.js";
 import Usuario from "./Usuario.js";
 
@@ -9,12 +11,17 @@ let usuarios = [
 ]
 
 let publicaciones = [
-    new Publicacion("apuntes matematica", "Primeros ejercicios", usuarios[0]),
-    new Publicacion("apuntes guitarra", "Acordes basicos", usuarios[0]),
-    new Publicacion("clases karate", "Defensa personal", usuarios[1]),
-    new Publicacion("resumen libro", "El señor de los anillos", usuarios[2]),
-    new Publicacion("examenes previos", "Apuntes para estudiar los examenes anteriores", usuarios[2])
+    new PublicacionVenta("apuntes matematica", "Primeros ejercicios", usuarios[0], 1000),
+    new PublicacionServicio("Clases de guitarra", "Aprende los acordes básicos", usuarios[0]),
+    new PublicacionServicio("Clases de karate", "Defensa personal", usuarios[1]),
+    new PublicacionVenta("resumen libro", "El señor de los anillos", usuarios[2]),
+    new PublicacionVenta("examenes previos", "Apuntes para estudiar los examenes anteriores", usuarios[2])
 ];
+
+publicaciones.forEach(publicacion => {
+    console.log("Verificacion de instancia de Publicacion: ", publicacion instanceof Publicacion);
+})
+
 
 publicaciones.forEach(publicacion => {
     console.log("Resumen", publicacion.mostrarResumen());
