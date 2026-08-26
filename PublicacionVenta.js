@@ -6,6 +6,12 @@ class PublicacionVenta extends Publicacion {
         this.precio = precio
         this.stock = 1
     }
+
+    mostrarResumen(){
+        let base = super.mostrarResumen()
+        base += ` - Precio: ${this.precio}`
+        return base
+    }
 }
 
 export default PublicacionVenta
