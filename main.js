@@ -12,10 +12,10 @@ let usuarios = [
 
 let publicaciones = [
     new PublicacionVenta("apuntes matematica", "Primeros ejercicios", usuarios[0], 1000),
-    new PublicacionServicio("Clases de guitarra", "Aprende los acordes básicos", usuarios[0]),
-    new PublicacionServicio("Clases de karate", "Defensa personal", usuarios[1]),
-    new PublicacionVenta("resumen libro", "El señor de los anillos", usuarios[2]),
-    new PublicacionVenta("examenes previos", "Apuntes para estudiar los examenes anteriores", usuarios[2])
+    new PublicacionServicio("Clases de guitarra", "Aprende los acordes básicos", usuarios[0], "presencial", 60),
+    new PublicacionServicio("Clases de karate", "Defensa personal", usuarios[1], "virtual", 120),
+    new PublicacionVenta("resumen libro", "El señor de los anillos", usuarios[2], 1000),
+    new PublicacionVenta("examenes previos", "Apuntes para estudiar los examenes anteriores", usuarios[2], 1400)
 ];
 
 publicaciones.forEach(publicacion => {

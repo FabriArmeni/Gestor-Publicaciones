@@ -6,6 +6,12 @@ class PublicacionServicio extends Publicacion {
         this.modalidad = modalidad // "presencial" o "virtual"
         this.duracionMinutos = duracionMinutos // number
     }
+
+    mostrarResumen(){
+        let base = super.mostrarResumen()
+        base += ` - Modalidad: ${this.modalidad} - Duracion: ${this.duracionMinutos} minutos`
+        return base
+    }
 }
 
 export default PublicacionServicio
