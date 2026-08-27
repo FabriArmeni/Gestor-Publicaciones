@@ -14,4 +14,9 @@ export default class Publicacion {
     estaActiva(){
         return this.activa;
     }
+
+    diasPublicada() {
+        const ms = new Date() - this.fechaPublicacion
+        return Math.floor(ms / (1000 * 60 * 60 * 24))
+    }
 }
