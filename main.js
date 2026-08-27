@@ -71,7 +71,7 @@ console.log("publicaciones de venta: ", repositorio.listarPorTipo(PublicacionVen
 
 console.log("publicaciones de servicio: ", repositorio.listarPorTipo(PublicacionServicio))
 
-// practica 3 parte 4
+// practica 4 parte 4
 /* En qué orden tienen que ir super() y el uso de this? Además, ¿qué pasó con 
 super.mostrarResumen() en este mostrarResumen()? ¿Por qué eso importa si Publicacion 
 cambia algún día cómo arma su resumen? */

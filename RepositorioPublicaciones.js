@@ -22,6 +22,14 @@ class RepositorioPublicaciones {
     listarPorTipo(claseConstructor) {
         return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
     }
+    
+    listarResumenes(){
+        return this.publicaciones.map(p => p.mostrarResumen())
+    }
+    
+    filtrarPorTipo(claseConstructor) {
+        return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
+    }
 }
 
 export default RepositorioPublicaciones
