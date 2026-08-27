@@ -70,3 +70,13 @@ console.log("=".repeat(30));
 console.log("publicaciones de venta: ", repositorio.listarPorTipo(PublicacionVenta))
 
 console.log("publicaciones de servicio: ", repositorio.listarPorTipo(PublicacionServicio))
+
+// practica 3 parte 4
+/* En qué orden tienen que ir super() y el uso de this? Además, ¿qué pasó con 
+super.mostrarResumen() en este mostrarResumen()? ¿Por qué eso importa si Publicacion 
+cambia algún día cómo arma su resumen? */
+
+// super() debe ir en la primera linea del constructor porque luego se usara un this
+
+// en el metodo mostrarResumen() al momento de sobreescribirlo faltaba escribir 
+// super.mostrarResumen() para que llame a la logica del metodo de la clase padre
