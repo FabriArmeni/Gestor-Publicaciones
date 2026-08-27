@@ -89,15 +89,30 @@ cambia algún día cómo arma su resumen? */
 // super.mostrarResumen() para que llame a la logica del metodo de la clase padre
 
 
+
+
+
 // Parte 2 · Una dependencia real: validarPublicacion
 const longitud = new Regla(10)
 const repositorio = new RepositorioPublicaciones()
+
+//Practica 6 - Parte 2: registrar dos listener
+repositorio.on("publicacionAgregada", (titulo) => {
+    console.log(`Publicacion "${titulo}" agregada`);
+})
+
+repositorio.on("publicacionAgregada", (titulo) => {
+    console.log("con exito!")
+    console.log("=======================");
+    ;
+})
+
 publicaciones.forEach(publi => {
     if (validarPublicacion(publi, longitud)) {
         repositorio.agregar(publi)
     }
 })
-console.log(repositorio.publicaciones);
+// console.log(repositorio.publicaciones);
 
 // porque la recibe por parametro y la usa temporalmente, no la guarda en un atributo
 // si guardara las reglas como atributo, queda vinculado al objeto publicacion y pasa

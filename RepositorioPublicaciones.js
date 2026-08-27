@@ -8,6 +8,7 @@ class RepositorioPublicaciones extends EventEmitter {
 
     agregar(publicacion) { //publicacion: objeto Publicacion
         this.publicaciones.push(publicacion)
+        this.emit("publicacionAgregada", publicacion.titulo)
     }
 
     buscarPorUsuario(nombre) {
