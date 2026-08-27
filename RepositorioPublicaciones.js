@@ -1,5 +1,8 @@
-class RepositorioPublicaciones {
+import EventEmitter from "node:events"
+
+class RepositorioPublicaciones extends EventEmitter {
     constructor(){
+        super()
         this.publicaciones = [] //arreglo de objetos Publicacion
     }
 
