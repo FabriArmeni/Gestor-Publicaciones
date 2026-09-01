@@ -1,13 +1,24 @@
 {
   "name": "gestor-publicaciones",
   "version": "1.0.0",
-  "type": "module",
   "description": "",
-  "main": "hola.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
+  "homepage": "https://github.com/FabriArmeni/Gestor-Publicaciones#readme",
+  "bugs": {
+    "url": "https://github.com/FabriArmeni/Gestor-Publicaciones/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FabriArmeni/Gestor-Publicaciones.git"
+  },
+  "license": "ISC",
   "author": "santi fabri martin",
-  "license": "ISC"
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }
