@@ -1,7 +1,7 @@
 import EventEmitter from "node:events"
 
 class RepositorioPublicaciones extends EventEmitter {
-    constructor(){
+    constructor() {
         super()
         this.publicaciones = [] //arreglo de objetos Publicacion
     }
@@ -26,11 +26,11 @@ class RepositorioPublicaciones extends EventEmitter {
     listarPorTipo(claseConstructor) {
         return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
     }
-    
-    listarResumenes(){
+
+    listarResumenes() {
         return this.publicaciones.map(p => p.mostrarResumen())
     }
-    
+
     filtrarPorTipo(claseConstructor) {
         return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
     }

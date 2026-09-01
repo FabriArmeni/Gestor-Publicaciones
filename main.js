@@ -1,6 +1,7 @@
 import Publicacion from "./Publicacion.js";
 import PublicacionServicio from "./PublicacionServicio.js";
 import PublicacionVenta from "./PublicacionVenta.js";
+import { publicarConDemora, publicarConDemorAsync } from "./publicarConDemora.js";
 import { Regla } from "./Regla.js";
 import RepositorioPublicaciones from "./RepositorioPublicaciones.js";
 import Usuario from "./Usuario.js";
@@ -97,23 +98,41 @@ const longitud = new Regla(10)
 const repositorio = new RepositorioPublicaciones()
 
 //Practica 6 - Parte 2: registrar dos listener
-repositorio.on("publicacionAgregada", (titulo) => {
-    console.log(`Publicacion "${titulo}" agregada`);
-})
+// repositorio.on("publicacionAgregada", (titulo) => {
+//     console.log(`Publicacion "${titulo}" agregada`);
+// })
 
-repositorio.on("publicacionAgregada", (titulo) => {
-    console.log("con exito!")
-    console.log("=======================");
-    ;
-})
+// repositorio.on("publicacionAgregada", (titulo) => {
+//     console.log("con exito!")
+//     console.log("=======================");
+//     ;
+// })
 
-publicaciones.forEach(publi => {
-    if (validarPublicacion(publi, longitud)) {
-        repositorio.agregar(publi)
-    }
-})
+// publicaciones.forEach(publi => {
+//     if (validarPublicacion(publi, longitud)) {
+//         repositorio.agregar(publi)
+//     }
+// })
 // console.log(repositorio.publicaciones);
 
 // porque la recibe por parametro y la usa temporalmente, no la guarda en un atributo
 // si guardara las reglas como atributo, queda vinculado al objeto publicacion y pasa
 //  a ser una asociacion
+
+// Parte 3 · Simular una operación asincrónica
+publicaciones.forEach(publi => {
+    if (validarPublicacion(publi, longitud)) {
+        publicarConDemora(publi, (publicacion) => repositorio.agregar(publicacion))
+        console.log('agregada!');
+    }
+})
+
+// Parte 3.5 · Simular una operación asincrónica
+publicaciones.forEach(async publi => {
+    if (validarPublicacion(publi, longitud)) {
+        console.log("antes");
+        
+        await publicarConDemorAsync(publi, (publicacion) => repositorio.agregar(publicacion))
+        console.log('agregada!');
+    }
+})
