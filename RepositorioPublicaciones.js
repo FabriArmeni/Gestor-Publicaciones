@@ -1,10 +1,14 @@
-class RepositorioPublicaciones {
-    constructor(){
+import EventEmitter from "node:events"
+
+class RepositorioPublicaciones extends EventEmitter {
+    constructor() {
+        super()
         this.publicaciones = [] //arreglo de objetos Publicacion
     }
 
     agregar(publicacion) { //publicacion: objeto Publicacion
         this.publicaciones.push(publicacion)
+        this.emit("publicacionAgregada", publicacion.titulo)
     }
 
     buscarPorUsuario(nombre) {
@@ -22,11 +26,11 @@ class RepositorioPublicaciones {
     listarPorTipo(claseConstructor) {
         return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
     }
-    
-    listarResumenes(){
+
+    listarResumenes() {
         return this.publicaciones.map(p => p.mostrarResumen())
     }
-    
+
     filtrarPorTipo(claseConstructor) {
         return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
     }
