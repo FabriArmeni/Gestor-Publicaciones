@@ -1,11 +1,11 @@
-import Publicacion from "./Publicacion.js";
-import PublicacionServicio from "./PublicacionServicio.js";
-import PublicacionVenta from "./PublicacionVenta.js";
-import { publicarConDemora, publicarConDemorAsync } from "./publicarConDemora.js";
-import { Regla } from "./Regla.js";
-import RepositorioPublicaciones from "./RepositorioPublicaciones.js";
-import Usuario from "./Usuario.js";
-import { validarPublicacion } from "./validarPublicacion.js";
+import Publicacion from "../../Publicacion.js";
+import PublicacionServicio from "../../PublicacionServicio.js";
+import PublicacionVenta from "../../PublicacionVenta.js";
+import { publicarConDemora, publicarConDemorAsync } from "../../publicarConDemora.js";
+import { Regla } from "../../Regla.js";
+import RepositorioPublicaciones from "../../RepositorioPublicaciones.js";
+import Usuario from "../../Usuario.js";
+import { validarPublicacion } from "../../validarPublicacion.js";
 
 let usuarios = [
     new Usuario("Santiago", "santi@gmail.com"),
