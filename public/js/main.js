@@ -17,3 +17,13 @@ function observarEvento(evento) {
 }
 titulo.addEventListener("input", observarEvento);
 tipo.addEventListener("change", observarEvento);
+
+function actualizarVistaPrevia() {
+  const nombre = autor.value || "Autor";
+  const texto = titulo.value || "Sin título";
+  vistaPrevia.textContent = `${texto} — ${nombre} (${tipo.value})`;
+}
+
+titulo.addEventListener("input", actualizarVistaPrevia);
+autor.addEventListener("input", actualizarVistaPrevia);
+tipo.addEventListener("change", actualizarVistaPrevia);
