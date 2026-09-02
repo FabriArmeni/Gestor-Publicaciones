@@ -2,6 +2,7 @@ const titulo = document.getElementById("titulo")
 const descripcion = document.getElementById("descripcion")
 const autor = document.getElementById("autor")
 const email = document.getElementById("email")
+const ayudaEmail = document.getElementById("ayuda-email")
 const tipo = document.getElementById("tipo")
 const camposEspecificos = document.getElementById("campos-especificos")
 const vistaPrevia = document.getElementById("vista-previa")
@@ -44,3 +45,10 @@ function actualizarCamposEspecificos() {
 }
 tipo.addEventListener("change", actualizarCamposEspecificos);
 actualizarCamposEspecificos();
+
+function mostrarAyudaEmail() {
+  ayudaEmail.textContent = "Usá un email válido del autor";
+}
+function ocultarAyudaEmail() { ayudaEmail.textContent = ""; }
+email.addEventListener("focus", mostrarAyudaEmail);
+email.addEventListener("blur", ocultarAyudaEmail);
