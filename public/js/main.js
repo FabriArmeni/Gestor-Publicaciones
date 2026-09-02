@@ -1,138 +1,19 @@
-import Publicacion from "../../Publicacion.js";
-import PublicacionServicio from "../../PublicacionServicio.js";
-import PublicacionVenta from "../../PublicacionVenta.js";
-import { publicarConDemora, publicarConDemorAsync } from "../../publicarConDemora.js";
-import { Regla } from "../../Regla.js";
-import RepositorioPublicaciones from "../../RepositorioPublicaciones.js";
-import Usuario from "../../Usuario.js";
-import { validarPublicacion } from "../../validarPublicacion.js";
+const titulo = document.getElementById("titulo")
+const descripcion = document.getElementById("descripcion")
+const autor = document.getElementById("autor")
+const email = document.getElementById("email")
+const tipo = document.getElementById("tipo")
+const camposEspecificos = document.getElementById("campos-especificos")
+const vistaPrevia = document.getElementById("vista-previa")
+const listaPublicaciones = document.getElementById("lista-publicaciones")
 
-let usuarios = [
-    new Usuario("Santiago", "santi@gmail.com"),
-    new Usuario("Martin", "tincho@gmail.com"),
-    new Usuario("Fabricio", "fabri@gmail.com"),
-]
-let clientes = [
-    new Usuario("pepe", "pepe@gmail.com"),
-    new Usuario("juan", "juan@gmail.com"),
-    new Usuario("paco", "paco@gmail.com"),
-]
-
-let publicaciones = [
-    new PublicacionVenta("apuntes matematica", "Primeros ejercicios", usuarios[0], 1000),
-    new PublicacionServicio("Clases de guitarra", "Aprende los acordes básicos", usuarios[0], "presencial", 60, clientes[0]),
-    new PublicacionServicio("Clases de karate", "Defensa personal", usuarios[1], "virtual", 120, clientes[1]),
-    new PublicacionServicio("Clases de programacion", "Programacion orientada a objetos", usuarios[0], "virtual", 120, clientes[2]),
-    new PublicacionVenta("resumen libro", "El señor de los anillos", usuarios[2], 1000),
-    new PublicacionVenta("examenes previos", "Apuntes para estudiar los examenes anteriores", usuarios[2], 1400)
-];
-
-// publicaciones.forEach(publicacion => {
-//     console.log("Verificacion de instancia de Publicacion: ", publicacion instanceof Publicacion);
-// })
-
-
-// publicaciones.forEach(publicacion => {
-//     console.log("Resumen", publicacion.mostrarResumen());
-// })
-
-// const publicacionesActivas = publicaciones.filter(publicacion => publicacion.estaActiva())
-// const primeraPublicacion = publicaciones.find(publicacion => publicacion.autor.nombre === "Santiago")
-
-// console.log("Publicaciones activas:", publicacionesActivas);
-// console.log("Primera publicacion por nombre:", primeraPublicacion);
-
-// Verificacion
-// usuarios[2].email = "fabricio@gmail.com"
-// const publicacionesFabri = publicaciones.filter(publicacion => publicacion.autor.nombre === "Fabricio")
-// console.log(publicacionesFabri);
-
-
-// // Parte 4
-// const repositorio = new RepositorioPublicaciones()
-// publicaciones.forEach(publi => repositorio.agregar(publi))
-// console.log("-----------------------");
-
-// repositorio.publicaciones.forEach(publi => console.log(publi))
-
-// console.log("Publicaciones de Santiago: ", repositorio.buscarPorUsuario("Santiago"))
-// console.log("Publicaciones de Martin: ", repositorio.buscarPorUsuario("Martin"))
-// console.log("Publicaciones de Fabricio: ", repositorio.buscarPorUsuario("Fabricio"))
-
-// parte 4 desafio 1
-// console.log("------------------------");
-// console.log("------------------------");
-// publicaciones[1].activa = false
-// publicaciones[3].activa = false
-// console.log(repositorio.filtrarActivas())
-
-// parte 4 desafio 2
-// console.log("------------------------");
-// console.log("Cantidad de publicaciones: ", repositorio.cantidadTotal());
-
-
-//Practica 3: parte 4
-// Desafío: agreguen un método listarPorTipo(claseConstructor) que devuelva solo las 
-// publicaciones que son instancia de esa clase, usando instanceof.
-// console.log("=".repeat(30));
-// console.log("publicaciones de venta: ", repositorio.listarPorTipo(PublicacionVenta))
-
-// console.log("publicaciones de servicio: ", repositorio.listarPorTipo(PublicacionServicio))
-
-// practica 4 parte 4
-/* En qué orden tienen que ir super() y el uso de this? Además, ¿qué pasó con 
-super.mostrarResumen() en este mostrarResumen()? ¿Por qué eso importa si Publicacion 
-cambia algún día cómo arma su resumen? */
-
-// super() debe ir en la primera linea del constructor porque luego se usara un this
-
-// en el metodo mostrarResumen() al momento de sobreescribirlo faltaba escribir 
-// super.mostrarResumen() para que llame a la logica del metodo de la clase padre
-
-
-
-
-
-// Parte 2 · Una dependencia real: validarPublicacion
-const longitud = new Regla(10)
-const repositorio = new RepositorioPublicaciones()
-
-//Practica 6 - Parte 2: registrar dos listener
-// repositorio.on("publicacionAgregada", (titulo) => {
-//     console.log(`Publicacion "${titulo}" agregada`);
-// })
-
-// repositorio.on("publicacionAgregada", (titulo) => {
-//     console.log("con exito!")
-//     console.log("=======================");
-//     ;
-// })
-
-// publicaciones.forEach(publi => {
-//     if (validarPublicacion(publi, longitud)) {
-//         repositorio.agregar(publi)
-//     }
-// })
-// console.log(repositorio.publicaciones);
-
-// porque la recibe por parametro y la usa temporalmente, no la guarda en un atributo
-// si guardara las reglas como atributo, queda vinculado al objeto publicacion y pasa
-//  a ser una asociacion
-
-// Parte 3 · Simular una operación asincrónica
-publicaciones.forEach(publi => {
-    if (validarPublicacion(publi, longitud)) {
-        publicarConDemora(publi, (publicacion) => repositorio.agregar(publicacion))
-        console.log('agregada!');
-    }
-})
-
-// Parte 3.5 · Simular una operación asincrónica
-publicaciones.forEach(async publi => {
-    if (validarPublicacion(publi, longitud)) {
-        console.log("antes");
-        
-        await publicarConDemorAsync(publi, (publicacion) => repositorio.agregar(publicacion))
-        console.log('agregada!');
-    }
-})
+function observarEvento(evento) {
+  console.table({
+    type: evento.type,
+    target: evento.target.id,
+    currentTarget: evento.currentTarget.id,
+    timeStamp: Math.round(evento.timeStamp)
+  });
+}
+titulo.addEventListener("input", observarEvento);
+tipo.addEventListener("change", observarEvento);
