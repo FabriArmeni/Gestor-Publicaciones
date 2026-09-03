@@ -75,10 +75,31 @@ function crearPublicacionDesdeFormulario() {
     );
 }
 
-function agregarTarjeta(publicacion) {
+function crearTarjeta(publicacion) {
     const resumen = publicacion.mostrarResumen()
-    listaPublicaciones.innerHTML += `<p>${resumen}</p>`
+    return `
+        <div class="tarjeta">
+            <p>${resumen}</p>
+            <button onclick="darDeBaja(${publicacion.titulo})">Dar de baja</button>
+        </div>
+    `
 }
+
+function agregarTarjeta(publicacion) {
+    const tarjeta = crearTarjeta(publicacion)
+    listaPublicaciones.innerHTML += tarjeta
+}
+
+function darDeBaja(titulo) {
+    publicaciones = publicaciones.filter(p => p.titulo !== titulo)
+    renderizar()
+}
+
+
+function renderizar() {
+  listaPublicaciones.replaceChildren(...publicaciones.map(crearTarjeta));
+}
+
 
 function manejarEnvio(evento) {
     evento.preventDefault();
