@@ -19,4 +19,6 @@ export default class Publicacion {
         const ms = new Date() - this.fechaPublicacion
         return Math.floor(ms / (1000 * 60 * 60 * 24))
     }
+
+    darDeBaja() { this.activa = false; }
 }
