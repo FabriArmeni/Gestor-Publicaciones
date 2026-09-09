@@ -86,11 +86,15 @@ function crearTarjeta(publicacion) {
     const boton = document.createElement("button");
     const botonDestacar = document.createElement("button");
 
+    tarjeta.setAttribute("data-id", publicacion.id)
     resumen.textContent = publicacion.mostrarResumen();
     estado.textContent = publicacion.activa ? "Activa" : "Inactiva"
     boton.textContent = "Dar de baja";
     boton.disabled = publicacion.activa === false;
+    boton.setAttribute("data-accion", "baja")
     botonDestacar.textContent = "Destacar"
+    botonDestacar.setAttribute("data-accion", "destacar")
+
 
     function manejarBaja(evento) {
         console.log(evento.type, evento.target);
