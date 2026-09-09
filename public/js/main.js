@@ -89,21 +89,23 @@ function crearTarjeta(publicacion) {
     tarjeta.setAttribute("data-id", publicacion.id)
     resumen.textContent = publicacion.mostrarResumen();
     estado.textContent = publicacion.activa ? "Activa" : "Inactiva"
+
     boton.textContent = "Dar de baja";
     boton.disabled = publicacion.activa === false;
     boton.setAttribute("data-accion", "baja")
+
     botonDestacar.textContent = "Destacar"
     botonDestacar.setAttribute("data-accion", "destacar")
 
 
-    function manejarBaja(evento) {
-        console.log(evento.type, evento.target);
-        publicacion.darDeBaja();
-        estado.textContent = "Inactiva";
-        boton.disabled = true;
-        renderizar()
-    }
-    boton.addEventListener("click", manejarBaja);
+    // function manejarBaja(evento) {
+    //     console.log(evento.type, evento.target);
+    //     publicacion.darDeBaja();
+    //     estado.textContent = "Inactiva";
+    //     boton.disabled = true;
+    //     renderizar()
+    // }
+    // boton.addEventListener("click", manejarBaja);
 
     tarjeta.classList.toggle("inactiva", publicacion.activa === false);
     tarjeta.append(resumen, estado, boton, botonDestacar);
@@ -145,5 +147,14 @@ function manejarAccion(evento) {
     const tarjeta = boton.closest("[data-id]");
     const id = Number(tarjeta.dataset.id);
     console.log(id, boton.dataset.accion);
+
+    let publicacion = publicaciones.find(p => p.id === id)
+    const accion = boton.dataset.accion
+
+    if (accion === "baja") publicacion.darDeBaja();
+    if (accion === "destacar") publicacion.destacar();
+    console.log(publicacion);
+    
+    renderizar();
 }
 listaPublicaciones.addEventListener("click", manejarAccion);
