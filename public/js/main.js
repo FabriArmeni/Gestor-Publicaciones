@@ -1,6 +1,7 @@
 import Usuario from "./modelos/Usuario.js";
 import PublicacionVenta from "./modelos/PublicacionVenta.js";
 import PublicacionServicio from "./modelos/PublicacionServicio.js";
+import RepositorioPublicaciones from "./modelos/RepositorioPublicaciones.js";
 
 const formulario = document.getElementById("form-publicacion");
 const titulo = document.getElementById("titulo");
@@ -12,6 +13,8 @@ const tipo = document.getElementById("tipo");
 const camposEspecificos = document.getElementById("campos-especificos");
 const vistaPrevia = document.getElementById("vista-previa");
 const listaPublicaciones = document.getElementById("lista-publicaciones");
+
+const repositorio = new RepositorioPublicaciones()
 
 function observarEvento(evento) {
     console.table({
@@ -59,7 +62,6 @@ function ocultarAyudaEmail() {
 email.addEventListener("focus", mostrarAyudaEmail);
 email.addEventListener("blur", ocultarAyudaEmail);
 
-const publicaciones = [];
 function crearPublicacionDesdeFormulario() {
     const usuario = new Usuario(autor.value, email.value);
     if (tipo.value === "venta") {
@@ -97,16 +99,6 @@ function crearTarjeta(publicacion) {
     botonDestacar.textContent = "Destacar"
     botonDestacar.setAttribute("data-accion", "destacar")
 
-
-    // function manejarBaja(evento) {
-    //     console.log(evento.type, evento.target);
-    //     publicacion.darDeBaja();
-    //     estado.textContent = "Inactiva";
-    //     boton.disabled = true;
-    //     renderizar()
-    // }
-    // boton.addEventListener("click", manejarBaja);
-
     tarjeta.classList.toggle("inactiva", publicacion.activa === false);
     tarjeta.append(resumen, estado, boton, botonDestacar);
     return tarjeta;
@@ -118,17 +110,18 @@ function agregarTarjeta(publicacion) {
 }
 
 function renderizar() {
-    listaPublicaciones.replaceChildren(...publicaciones.map(crearTarjeta));
+    listaPublicaciones.replaceChildren(...repositorio.publicaciones.map(crearTarjeta));
 }
 
 function manejarEnvio(evento) {
     evento.preventDefault();
     const publicacion = crearPublicacionDesdeFormulario();
-    publicaciones.push(publicacion);
+    repositorio.agregar(publicacion);
     agregarTarjeta(publicacion);
     formulario.reset();
-    actualizarCamposEspecificos();
-    actualizarVistaPrevia();
+    // actualizarCamposEspecificos();
+    // actualizarVistaPrevia();
+    renderizar()
 }
 formulario.addEventListener("submit", manejarEnvio);
 
@@ -148,7 +141,7 @@ function manejarAccion(evento) {
     const id = Number(tarjeta.dataset.id);
     console.log(id, boton.dataset.accion);
 
-    let publicacion = publicaciones.find(p => p.id === id)
+    let publicacion = repositorio.publicaciones.find(p => p.id === id)
     const accion = boton.dataset.accion
 
     if (accion === "baja") publicacion.darDeBaja();
