@@ -5,6 +5,7 @@ export default class Publicacion {
         this.autor = autor; // objeto Usuario
         this.fechaPublicacion = new Date();
         this.activa = true;
+        this.destacado = false
     }
 
     mostrarResumen() {
@@ -21,4 +22,7 @@ export default class Publicacion {
     }
 
     darDeBaja() { this.activa = false; }
+
+    destacar() { this.destacado = true }
+    opacar() { this.destacado = false }
 }

@@ -84,11 +84,13 @@ function crearTarjeta(publicacion) {
     const resumen = document.createElement("p");
     const estado = document.createElement("p");
     const boton = document.createElement("button");
-    
+    const botonDestacar = document.createElement("button");
+
     resumen.textContent = publicacion.mostrarResumen();
     estado.textContent = publicacion.activa ? "Activa" : "Inactiva"
     boton.textContent = "Dar de baja";
     boton.disabled = publicacion.activa === false;
+    botonDestacar.textContent = "Destacar"
 
     function manejarBaja(evento) {
         console.log(evento.type, evento.target);
@@ -100,7 +102,7 @@ function crearTarjeta(publicacion) {
     boton.addEventListener("click", manejarBaja);
 
     tarjeta.classList.toggle("inactiva", publicacion.activa === false);
-    tarjeta.append(resumen, estado, boton);
+    tarjeta.append(resumen, estado, boton, botonDestacar);
     return tarjeta;
 }
 
@@ -123,3 +125,11 @@ function manejarEnvio(evento) {
     actualizarVistaPrevia();
 }
 formulario.addEventListener("submit", manejarEnvio);
+
+// Parte 1: cambia el target (lo que se clickea) y el currentTarget se mantiene (listaPublicaciones)
+function observarClick(evento) {
+    console.log("target", evento.target);
+    console.log("currentTarget", evento.currentTarget);
+}
+listaPublicaciones.addEventListener("click", observarClick);
+listaPublicaciones.removeEventListener("click", observarClick)
