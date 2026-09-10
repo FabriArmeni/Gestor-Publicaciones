@@ -101,6 +101,12 @@ function crearTarjeta(publicacion) {
 
     tarjeta.classList.toggle("inactiva", publicacion.activa === false);
     tarjeta.append(resumen, estado, boton, botonDestacar);
+
+    // tarjeta.addEventListener("click", (e) => {
+    //     e.stopPropagation()
+    //     console.log(tarjeta);
+    // })
+    // El stopPropagation corta el burbujeo del evento click y no llega a la lista
     return tarjeta;
 }
 
