@@ -1,14 +1,14 @@
-import EventEmitter from "node:events"
+// import EventEmitter from "node:events"
 
-class RepositorioPublicaciones extends EventEmitter {
+class RepositorioPublicaciones {
     constructor() {
-        super()
+        // super()
         this.publicaciones = [] //arreglo de objetos Publicacion
     }
 
     agregar(publicacion) { //publicacion: objeto Publicacion
         this.publicaciones.push(publicacion)
-        this.emit("publicacionAgregada", publicacion.titulo)
+        // this.emit("publicacionAgregada", publicacion.titulo)
     }
 
     buscarPorUsuario(nombre) {

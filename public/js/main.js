@@ -1,6 +1,7 @@
 import Usuario from "./modelos/Usuario.js";
 import PublicacionVenta from "./modelos/PublicacionVenta.js";
 import PublicacionServicio from "./modelos/PublicacionServicio.js";
+import RepositorioPublicaciones from "./modelos/RepositorioPublicaciones.js";
 
 const formulario = document.getElementById("form-publicacion");
 const titulo = document.getElementById("titulo");
@@ -12,6 +13,8 @@ const tipo = document.getElementById("tipo");
 const camposEspecificos = document.getElementById("campos-especificos");
 const vistaPrevia = document.getElementById("vista-previa");
 const listaPublicaciones = document.getElementById("lista-publicaciones");
+
+const repositorio = new RepositorioPublicaciones()
 
 function observarEvento(evento) {
     console.table({
@@ -59,7 +62,6 @@ function ocultarAyudaEmail() {
 email.addEventListener("focus", mostrarAyudaEmail);
 email.addEventListener("blur", ocultarAyudaEmail);
 
-const publicaciones = [];
 function crearPublicacionDesdeFormulario() {
     const usuario = new Usuario(autor.value, email.value);
     if (tipo.value === "venta") {
@@ -84,23 +86,27 @@ function crearTarjeta(publicacion) {
     const resumen = document.createElement("p");
     const estado = document.createElement("p");
     const boton = document.createElement("button");
-    
+    const botonDestacar = document.createElement("button");
+
+    tarjeta.setAttribute("data-id", publicacion.id)
     resumen.textContent = publicacion.mostrarResumen();
     estado.textContent = publicacion.activa ? "Activa" : "Inactiva"
+
     boton.textContent = "Dar de baja";
     boton.disabled = publicacion.activa === false;
+    boton.setAttribute("data-accion", "baja")
 
-    function manejarBaja(evento) {
-        console.log(evento.type, evento.target);
-        publicacion.darDeBaja();
-        estado.textContent = "Inactiva";
-        boton.disabled = true;
-        renderizar()
-    }
-    boton.addEventListener("click", manejarBaja);
+    botonDestacar.textContent = "Destacar"
+    botonDestacar.setAttribute("data-accion", "destacar")
 
     tarjeta.classList.toggle("inactiva", publicacion.activa === false);
-    tarjeta.append(resumen, estado, boton);
+    tarjeta.append(resumen, estado, boton, botonDestacar);
+
+    // tarjeta.addEventListener("click", (e) => {
+    //     e.stopPropagation()
+    //     console.log(tarjeta);
+    // })
+    // El stopPropagation corta el burbujeo del evento click y no llega a la lista
     return tarjeta;
 }
 
@@ -110,16 +116,44 @@ function agregarTarjeta(publicacion) {
 }
 
 function renderizar() {
-    listaPublicaciones.replaceChildren(...publicaciones.map(crearTarjeta));
+    listaPublicaciones.replaceChildren(...repositorio.publicaciones.map(crearTarjeta));
 }
 
 function manejarEnvio(evento) {
     evento.preventDefault();
     const publicacion = crearPublicacionDesdeFormulario();
-    publicaciones.push(publicacion);
+    repositorio.agregar(publicacion);
     agregarTarjeta(publicacion);
     formulario.reset();
-    actualizarCamposEspecificos();
-    actualizarVistaPrevia();
+    // actualizarCamposEspecificos();
+    // actualizarVistaPrevia();
+    renderizar()
 }
 formulario.addEventListener("submit", manejarEnvio);
+
+// Parte 1: cambia el target (lo que se clickea) y el currentTarget se mantiene (listaPublicaciones)
+function observarClick(evento) {
+    console.log("target", evento.target);
+    console.log("currentTarget", evento.currentTarget);
+}
+listaPublicaciones.addEventListener("click", observarClick);
+listaPublicaciones.removeEventListener("click", observarClick)
+
+// Parte 3
+function manejarAccion(evento) {
+    const boton = evento.target.closest("button[data-accion]");
+    if (!boton || !listaPublicaciones.contains(boton)) return;
+    const tarjeta = boton.closest("[data-id]");
+    const id = Number(tarjeta.dataset.id);
+    console.log(id, boton.dataset.accion);
+
+    let publicacion = repositorio.publicaciones.find(p => p.id === id)
+    const accion = boton.dataset.accion
+
+    if (accion === "baja") publicacion.darDeBaja();
+    if (accion === "destacar") publicacion.destacar();
+    console.log(publicacion);
+    
+    renderizar();
+}
+listaPublicaciones.addEventListener("click", manejarAccion);
