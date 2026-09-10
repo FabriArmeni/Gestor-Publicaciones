@@ -28,4 +28,8 @@ export default class Publicacion {
 
     destacar() { this.destacado = true }
     opacar() { this.destacado = false }
+
+    resumen() {
+        return `Titulo: "${this.titulo}" - Autor: ${this.autor.nombre} - Estado: ${this.activa}`
+    }
 }

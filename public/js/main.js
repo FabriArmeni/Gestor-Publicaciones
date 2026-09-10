@@ -14,18 +14,18 @@ const camposEspecificos = document.getElementById("campos-especificos");
 const vistaPrevia = document.getElementById("vista-previa");
 const listaPublicaciones = document.getElementById("lista-publicaciones");
 
-const repositorio = new RepositorioPublicaciones()
+const repositorio = new RepositorioPublicaciones();
 
-function observarEvento(evento) {
-    console.table({
-        type: evento.type,
-        target: evento.target.id,
-        currentTarget: evento.currentTarget.id,
-        timeStamp: Math.round(evento.timeStamp),
-    });
-}
-titulo.addEventListener("input", observarEvento);
-tipo.addEventListener("change", observarEvento);
+// function observarEvento(evento) {
+//     console.table({
+//         type: evento.type,
+//         target: evento.target.id,
+//         currentTarget: evento.currentTarget.id,
+//         timeStamp: Math.round(evento.timeStamp),
+//     });
+// }
+// titulo.addEventListener("input", observarEvento);
+// tipo.addEventListener("change", observarEvento);
 
 function actualizarVistaPrevia() {
     const nombre = autor.value || "Autor";
@@ -88,25 +88,20 @@ function crearTarjeta(publicacion) {
     const boton = document.createElement("button");
     const botonDestacar = document.createElement("button");
 
-    tarjeta.setAttribute("data-id", publicacion.id)
+    tarjeta.setAttribute("data-id", publicacion.id);
     resumen.textContent = publicacion.mostrarResumen();
-    estado.textContent = publicacion.activa ? "Activa" : "Inactiva"
+    estado.textContent = publicacion.activa ? "Activa" : "Inactiva";
 
     boton.textContent = "Dar de baja";
     boton.disabled = publicacion.activa === false;
-    boton.setAttribute("data-accion", "baja")
+    boton.setAttribute("data-accion", "baja");
 
-    botonDestacar.textContent = "Destacar"
-    botonDestacar.setAttribute("data-accion", "destacar")
+    botonDestacar.textContent = "Destacar";
+    botonDestacar.setAttribute("data-accion", "destacar");
 
     tarjeta.classList.toggle("inactiva", publicacion.activa === false);
     tarjeta.append(resumen, estado, boton, botonDestacar);
 
-    // tarjeta.addEventListener("click", (e) => {
-    //     e.stopPropagation()
-    //     console.log(tarjeta);
-    // })
-    // El stopPropagation corta el burbujeo del evento click y no llega a la lista
     return tarjeta;
 }
 
@@ -116,7 +111,9 @@ function agregarTarjeta(publicacion) {
 }
 
 function renderizar() {
-    listaPublicaciones.replaceChildren(...repositorio.publicaciones.map(crearTarjeta));
+    listaPublicaciones.replaceChildren(
+        ...repositorio.publicaciones.map(crearTarjeta),
+    );
 }
 
 function manejarEnvio(evento) {
@@ -127,19 +124,11 @@ function manejarEnvio(evento) {
     formulario.reset();
     // actualizarCamposEspecificos();
     // actualizarVistaPrevia();
-    renderizar()
+    renderizar();
 }
 formulario.addEventListener("submit", manejarEnvio);
 
-// Parte 1: cambia el target (lo que se clickea) y el currentTarget se mantiene (listaPublicaciones)
-function observarClick(evento) {
-    console.log("target", evento.target);
-    console.log("currentTarget", evento.currentTarget);
-}
-listaPublicaciones.addEventListener("click", observarClick);
-listaPublicaciones.removeEventListener("click", observarClick)
 
-// Parte 3
 function manejarAccion(evento) {
     const boton = evento.target.closest("button[data-accion]");
     if (!boton || !listaPublicaciones.contains(boton)) return;
@@ -147,13 +136,37 @@ function manejarAccion(evento) {
     const id = Number(tarjeta.dataset.id);
     console.log(id, boton.dataset.accion);
 
-    let publicacion = repositorio.publicaciones.find(p => p.id === id)
-    const accion = boton.dataset.accion
+    let publicacion = repositorio.publicaciones.find((p) => p.id === id);
+    const accion = boton.dataset.accion;
 
     if (accion === "baja") publicacion.darDeBaja();
     if (accion === "destacar") publicacion.destacar();
     console.log(publicacion);
-    
+
     renderizar();
 }
 listaPublicaciones.addEventListener("click", manejarAccion);
+
+function esperar(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
+const estado = document.getElementById("estado")
+const botonActualizar = document.getElementById("botonActualizar")
+
+async function cargarPublicaciones() {
+    estado.textContent = "Cargando publicaciones...";
+    botonActualizar.disabled = true;
+    const respuesta = await fetch("/api/publicaciones");
+    if (!respuesta.ok) {
+        throw new Error("La respuesta no fue exitosa");
+    }
+    const datos = await respuesta.json();
+    repositorio.cargarDesde(datos);
+    renderizar();
+    estado.textContent = `${datos.length} publicaciones recibidas`;
+}
+
+botonActualizar.addEventListener("click", cargarPublicaciones)

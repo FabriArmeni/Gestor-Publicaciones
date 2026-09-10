@@ -1,4 +1,7 @@
-// import EventEmitter from "node:events"
+import Publicacion from "./Publicacion.js"
+import PublicacionServicio from "./PublicacionServicio.js"
+import PublicacionVenta from "./PublicacionVenta.js"
+import Usuario from "./Usuario.js"
 
 class RepositorioPublicaciones {
     constructor() {
@@ -8,7 +11,6 @@ class RepositorioPublicaciones {
 
     agregar(publicacion) { //publicacion: objeto Publicacion
         this.publicaciones.push(publicacion)
-        // this.emit("publicacionAgregada", publicacion.titulo)
     }
 
     buscarPorUsuario(nombre) {
@@ -33,6 +35,25 @@ class RepositorioPublicaciones {
 
     filtrarPorTipo(claseConstructor) {
         return this.publicaciones.filter(publicacion => publicacion instanceof claseConstructor)
+    }
+
+    cargarDesde(datos) {
+        const publicaciones = datos.map(dato => {
+            const autor = new Usuario(dato.autor.nombre, dato.autor.email)
+
+            if (dato.precio) {
+                return new PublicacionVenta(dato.titulo, dato.descripcion, autor, dato.precio)
+            } else if(dato.modalidad){
+                const cliente = new Usuario(dato.cliente.nombre, dato.cliente.email)
+                return new PublicacionServicio(dato.titulo, dato.descripcion, autor, dato.modalidad, dato.duracionMinutos, cliente)
+            } else {
+                return new Publicacion(dato.titulo, dato.descripcion, autor)
+            }
+        })
+
+        publicaciones.forEach(publi => {
+            this.publicaciones.push(publi)
+        })
     }
 }
 
