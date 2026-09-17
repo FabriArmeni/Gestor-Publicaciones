@@ -1,7 +1,8 @@
-import Usuario from "./modelos/Usuario.js";
-import PublicacionVenta from "./modelos/PublicacionVenta.js";
-import PublicacionServicio from "./modelos/PublicacionServicio.js";
-import RepositorioPublicaciones from "./modelos/RepositorioPublicaciones.js";
+import Usuario from "../src/Usuario.js";
+import Publicacion from "../src/Publicacion.js";
+import PublicacionVenta from "../src/PublicacionVenta.js"
+import PublicacionServicio from "../src/PublicacionServicio.js";
+import RepositorioPublicaciones from "../src/RepositorioPublicaciones.js";
 
 const formulario = document.getElementById("form-publicacion");
 const titulo = document.getElementById("titulo");
@@ -219,7 +220,6 @@ function actualizarEstadoFormulario() {
     enviar.disabled = !formularioValido();
 }
 
-formulario.addEventListener("input", actualizarEstadoFormulario);
 
 actualizarCamposEspecificos();
 actualizarVistaPrevia()
@@ -242,7 +242,21 @@ email.addEventListener("focus", mostrarAyudaEmail);
 email.addEventListener("blur", ocultarAyudaEmail);
 
 formulario.addEventListener("submit", manejarEnvio);
+formulario.addEventListener("input", actualizarEstadoFormulario);
 listaPublicaciones.addEventListener("click", manejarAccion);
 
 botonActualizar.addEventListener("click", () => cargarPublicaciones());
 botonForzarError.addEventListener("click", () => cargarPublicaciones(true));
+
+// part1
+const pub1 = new Publicacion("vendo", "vendo todo, me voy", new Usuario("martin", "tincho@gmail.com"))
+pub1.agregarEtiqueta("urgente")
+pub1.agregarEtiqueta("urgente")
+
+// console.log(pub1.etiquetas);
+
+//part 2
+repositorio.agregar(pub1)
+pub1.darDeBaja()
+const busqueda = repositorio.buscarPorEtiqueta("urgente")
+console.log(busqueda);

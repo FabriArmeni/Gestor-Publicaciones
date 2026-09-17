@@ -1,0 +1,44 @@
+// import { RepositorioPublicaciones } from "../src/RepositorioPublicaciones.js";
+// import { Publicacion } from "../src/Publicacion.js";
+
+import RepositorioPublicaciones from "../public/src/RepositorioPublicaciones.js";
+import Publicacion from "../public/src/Publicacion.js";
+import PublicacionVenta from "../public/src/PublicacionVenta.js";
+import PublicacionServicio from "../public/src/PublicacionServicio.js";
+
+describe("RepositorioPublicaciones", () => {
+    test("buscarPorEtiqueta devuelve coincidencias activas", () => {
+        const repositorio = new RepositorioPublicaciones();
+        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        publicacion.agregarEtiqueta("redes");
+        repositorio.agregar(publicacion);
+        expect(repositorio.buscarPorEtiqueta("redes")).toEqual([publicacion]);
+    });
+    test("una publicación dada de baja queda excluida", () => {
+        const repositorio = new RepositorioPublicaciones();
+        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        publicacion.agregarEtiqueta("redes");
+        publicacion.darDeBaja();
+        repositorio.agregar(publicacion);
+        expect(repositorio.buscarPorEtiqueta("redes")).toEqual([]);
+    });
+    test("una etiqueta inexistente devuelve un arreglo vacío", () => {
+        const repositorio = new RepositorioPublicaciones();
+        expect(repositorio.buscarPorEtiqueta("inexistente")).toEqual([]);
+    });
+
+    // parte 7
+    test("cada subclase arma su propio resumen", () => {
+        const venta = new PublicacionVenta("Calculadora", "...", "Ana", 5000);
+        const servicio = new PublicacionServicio(
+            "Clases de Álgebra",
+            "...",
+            "Luis",
+            "presencial",
+            120,
+            {nombre: "juan", email: "juan@gmail.com"}
+        );
+        expect(venta.mostrarResumen()).toContain("5000");
+        expect(servicio.mostrarResumen()).toContain("Clases de Álgebra");
+    });
+});

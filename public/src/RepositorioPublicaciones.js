@@ -43,7 +43,7 @@ class RepositorioPublicaciones {
 
             if (dato.precio) {
                 return new PublicacionVenta(dato.titulo, dato.descripcion, autor, dato.precio)
-            } else if(dato.modalidad){
+            } else if (dato.modalidad) {
                 const cliente = new Usuario(dato.cliente.nombre, dato.cliente.email)
                 return new PublicacionServicio(dato.titulo, dato.descripcion, autor, dato.modalidad, dato.duracionMinutos, cliente)
             } else {
@@ -54,6 +54,12 @@ class RepositorioPublicaciones {
         publicaciones.forEach(publi => {
             this.publicaciones.push(publi)
         })
+    }
+
+    buscarPorEtiqueta(etiqueta) {
+        return this.publicaciones.filter(publicacion =>
+            publicacion.activa && publicacion.tieneEtiqueta(etiqueta)
+        );
     }
 }
 
