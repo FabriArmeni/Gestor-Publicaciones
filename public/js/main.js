@@ -110,7 +110,7 @@ function agregarTarjeta(publicacion) {
     listaPublicaciones.append(tarjeta);
 }
 
-function renderizar() {
+function renderizarPublicaciones() {
     listaPublicaciones.replaceChildren(
         ...repositorio.publicaciones.map(crearTarjeta),
     );
@@ -124,7 +124,7 @@ function manejarEnvio(evento) {
     formulario.reset();
     // actualizarCamposEspecificos();
     // actualizarVistaPrevia();
-    renderizar();
+    renderizarPublicaciones();
 }
 formulario.addEventListener("submit", manejarEnvio);
 
@@ -143,7 +143,7 @@ function manejarAccion(evento) {
     if (accion === "destacar") publicacion.destacar();
     console.log(publicacion);
 
-    renderizar();
+    renderizarPublicaciones();
 }
 listaPublicaciones.addEventListener("click", manejarAccion);
 
@@ -159,8 +159,9 @@ async function cargarPublicaciones() {
     }
     const datos = await respuesta.json();
     repositorio.cargarDesde(datos);
-    renderizar();
+    renderizarPublicaciones();
     estado.textContent = `${datos.length} publicaciones recibidas`;
+    botonActualizar.disabled = false;
 }
 
 botonActualizar.addEventListener("click", cargarPublicaciones)
