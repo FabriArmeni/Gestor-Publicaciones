@@ -18,4 +18,21 @@ describe("Publicacion", () => {
         publicacion.darDeBaja();
         expect(publicacion.activa).toBe(false);
     });
+
+    // etiquetas
+    test("una etiqueta repetida no se agrega dos veces", () => {
+        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        publicacion.agregarEtiqueta("redes");
+        publicacion.agregarEtiqueta("redes");
+        expect(publicacion.etiquetas).toEqual(["redes"]);
+    });
+    test("una etiqueta vacía lanza el error esperado", () => {
+        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        expect(() => publicacion.agregarEtiqueta(" ")).toThrow("Etiqueta inválida");
+    });
+    test("tieneEtiqueta ignora mayúsculas y minúsculas", () => {
+        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        publicacion.agregarEtiqueta("Redes");
+        expect(publicacion.tieneEtiqueta("redes")).toBe(true);
+    });
 });
