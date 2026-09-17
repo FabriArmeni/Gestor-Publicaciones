@@ -1,8 +1,8 @@
-import Usuario from "./modelos/Usuario.js";
-import Publicacion from "./modelos/Publicacion.js";
-import PublicacionVenta from "./modelos/PublicacionVenta.js";
-import PublicacionServicio from "./modelos/PublicacionServicio.js";
-import RepositorioPublicaciones from "./modelos/RepositorioPublicaciones.js";
+import Usuario from "../src/Usuario.js";
+import Publicacion from "../src/Publicacion.js";
+import PublicacionVenta from "../src/PublicacionVenta.js"
+import PublicacionServicio from "../src/PublicacionServicio.js";
+import RepositorioPublicaciones from "../src/RepositorioPublicaciones.js";
 
 const formulario = document.getElementById("form-publicacion");
 const titulo = document.getElementById("titulo");
