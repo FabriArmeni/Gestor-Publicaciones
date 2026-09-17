@@ -16,17 +16,6 @@ const listaPublicaciones = document.getElementById("lista-publicaciones");
 
 const repositorio = new RepositorioPublicaciones();
 
-// function observarEvento(evento) {
-//     console.table({
-//         type: evento.type,
-//         target: evento.target.id,
-//         currentTarget: evento.currentTarget.id,
-//         timeStamp: Math.round(evento.timeStamp),
-//     });
-// }
-// titulo.addEventListener("input", observarEvento);
-// tipo.addEventListener("change", observarEvento);
-
 function actualizarVistaPrevia() {
     const nombre = autor.value || "Autor";
     const texto = titulo.value || "Sin título";
@@ -149,19 +138,29 @@ listaPublicaciones.addEventListener("click", manejarAccion);
 
 const estado = document.getElementById("estado")
 const botonActualizar = document.getElementById("botonActualizar")
+const botonForzarError = document.getElementById("botonForzarError")
 
-async function cargarPublicaciones() {
+async function cargarPublicaciones(forzarError = false) {
     estado.textContent = "Cargando publicaciones...";
     botonActualizar.disabled = true;
-    const respuesta = await fetch("/api/publicaciones");
-    if (!respuesta.ok) {
-        throw new Error("La respuesta no fue exitosa");
+    try {
+        const url = forzarError ? "/api/publicaciones?error=1" : "/api/publicaciones"
+        const respuesta = await fetch(url);
+        if (!respuesta.ok) {
+            throw new Error("La respuesta no fue exitosa");
+        }
+        const datos = await respuesta.json();
+        repositorio.cargarDesde(datos);
+        renderizarPublicaciones();
+        estado.textContent = `${datos.length} publicaciones recibidas`;
+        
+    } catch (error) {
+        estado.textContent = `Error: ${error.message}`
+    } finally {
+        botonActualizar.disabled = false;
     }
-    const datos = await respuesta.json();
-    repositorio.cargarDesde(datos);
-    renderizarPublicaciones();
-    estado.textContent = `${datos.length} publicaciones recibidas`;
-    botonActualizar.disabled = false;
+
 }
 
-botonActualizar.addEventListener("click", cargarPublicaciones)
+botonActualizar.addEventListener("click", () => cargarPublicaciones())
+botonForzarError.addEventListener("click", () => cargarPublicaciones(true))
