@@ -9,6 +9,7 @@ export default class Publicacion {
         this.activa = true;
         this.destacado = false
         this.id = Publicacion.contador++
+        this.etiquetas = []
     }
 
     mostrarResumen() {
@@ -32,4 +33,21 @@ export default class Publicacion {
     get resumen() {
         return `Autor: ${this.autor.nombre} - Titulo: "${this.titulo}" - Estado: ${this.activa}`
     }
+
+    agregarEtiqueta(etiqueta) {
+        const normalizada = etiqueta.trim();
+        if (!normalizada) {
+            throw new Error("Etiqueta inválida");
+        }
+        const yaExiste = this.tieneEtiqueta(normalizada);
+        if (!yaExiste) {
+            this.etiquetas.push(normalizada);
+        }
+    }
+
+    tieneEtiqueta(etiqueta) {
+        const buscada = etiqueta.trim().toLowerCase();
+        return this.etiquetas.some(e => e.toLowerCase() === buscada);
+    }
+
 }

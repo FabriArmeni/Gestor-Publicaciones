@@ -1,4 +1,5 @@
 import Usuario from "./modelos/Usuario.js";
+import Publicacion from "./modelos/Publicacion.js";
 import PublicacionVenta from "./modelos/PublicacionVenta.js";
 import PublicacionServicio from "./modelos/PublicacionServicio.js";
 import RepositorioPublicaciones from "./modelos/RepositorioPublicaciones.js";
@@ -219,7 +220,6 @@ function actualizarEstadoFormulario() {
     enviar.disabled = !formularioValido();
 }
 
-formulario.addEventListener("input", actualizarEstadoFormulario);
 
 actualizarCamposEspecificos();
 actualizarVistaPrevia()
@@ -242,7 +242,15 @@ email.addEventListener("focus", mostrarAyudaEmail);
 email.addEventListener("blur", ocultarAyudaEmail);
 
 formulario.addEventListener("submit", manejarEnvio);
+formulario.addEventListener("input", actualizarEstadoFormulario);
 listaPublicaciones.addEventListener("click", manejarAccion);
 
 botonActualizar.addEventListener("click", () => cargarPublicaciones());
 botonForzarError.addEventListener("click", () => cargarPublicaciones(true));
+
+// part1
+const pub1 = new Publicacion("vendo", "vendo todo, me voy", new Usuario("martin", "tincho@gmail.com"))
+pub1.agregarEtiqueta("urgente")
+pub1.agregarEtiqueta("urgente")
+
+console.log(pub1.etiquetas);
