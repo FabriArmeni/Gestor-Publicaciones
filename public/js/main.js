@@ -253,4 +253,10 @@ const pub1 = new Publicacion("vendo", "vendo todo, me voy", new Usuario("martin"
 pub1.agregarEtiqueta("urgente")
 pub1.agregarEtiqueta("urgente")
 
-console.log(pub1.etiquetas);
+// console.log(pub1.etiquetas);
+
+//part 2
+repositorio.agregar(pub1)
+pub1.darDeBaja()
+const busqueda = repositorio.buscarPorEtiqueta("urgente")
+console.log(busqueda);
