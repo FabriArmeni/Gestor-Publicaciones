@@ -13,6 +13,9 @@ const tipo = document.getElementById("tipo");
 const camposEspecificos = document.getElementById("campos-especificos");
 const vistaPrevia = document.getElementById("vista-previa");
 const listaPublicaciones = document.getElementById("lista-publicaciones");
+const estado = document.getElementById("estado");
+const botonActualizar = document.getElementById("botonActualizar");
+const botonForzarError = document.getElementById("botonForzarError");
 
 const repositorio = new RepositorioPublicaciones();
 
@@ -21,10 +24,6 @@ function actualizarVistaPrevia() {
     const texto = titulo.value || "Sin título";
     vistaPrevia.textContent = `${texto} — ${nombre} (${tipo.value})`;
 }
-
-titulo.addEventListener("input", actualizarVistaPrevia);
-autor.addEventListener("input", actualizarVistaPrevia);
-tipo.addEventListener("change", actualizarVistaPrevia);
 
 function actualizarCamposEspecificos() {
     if (tipo.value === "venta") {
@@ -39,17 +38,14 @@ function actualizarCamposEspecificos() {
       <input id="duracion" type="number" placeholder="Minutos">`;
     }
 }
-tipo.addEventListener("change", actualizarCamposEspecificos);
-actualizarCamposEspecificos();
 
 function mostrarAyudaEmail() {
     ayudaEmail.textContent = "Usá un email válido del autor";
 }
+
 function ocultarAyudaEmail() {
     ayudaEmail.textContent = "";
 }
-email.addEventListener("focus", mostrarAyudaEmail);
-email.addEventListener("blur", ocultarAyudaEmail);
 
 function crearPublicacionDesdeFormulario() {
     const usuario = new Usuario(autor.value, email.value);
@@ -111,12 +107,8 @@ function manejarEnvio(evento) {
     repositorio.agregar(publicacion);
     agregarTarjeta(publicacion);
     formulario.reset();
-    // actualizarCamposEspecificos();
-    // actualizarVistaPrevia();
     renderizarPublicaciones();
 }
-formulario.addEventListener("submit", manejarEnvio);
-
 
 function manejarAccion(evento) {
     const boton = evento.target.closest("button[data-accion]");
@@ -134,17 +126,14 @@ function manejarAccion(evento) {
 
     renderizarPublicaciones();
 }
-listaPublicaciones.addEventListener("click", manejarAccion);
-
-const estado = document.getElementById("estado")
-const botonActualizar = document.getElementById("botonActualizar")
-const botonForzarError = document.getElementById("botonForzarError")
 
 async function cargarPublicaciones(forzarError = false) {
     estado.textContent = "Cargando publicaciones...";
     botonActualizar.disabled = true;
     try {
-        const url = forzarError ? "/api/publicaciones?error=1" : "/api/publicaciones"
+        const url = forzarError
+            ? "/api/publicaciones?error=1"
+            : "/api/publicaciones";
         const respuesta = await fetch(url);
         if (!respuesta.ok) {
             throw new Error("La respuesta no fue exitosa");
@@ -153,14 +142,26 @@ async function cargarPublicaciones(forzarError = false) {
         repositorio.cargarDesde(datos);
         renderizarPublicaciones();
         estado.textContent = `${datos.length} publicaciones recibidas`;
-        
     } catch (error) {
-        estado.textContent = `Error: ${error.message}`
+        estado.textContent = `Error: ${error.message}`;
     } finally {
         botonActualizar.disabled = false;
     }
-
 }
 
-botonActualizar.addEventListener("click", () => cargarPublicaciones())
-botonForzarError.addEventListener("click", () => cargarPublicaciones(true))
+// listeners
+titulo.addEventListener("input", actualizarVistaPrevia);
+autor.addEventListener("input", actualizarVistaPrevia);
+tipo.addEventListener("change", actualizarVistaPrevia);
+
+tipo.addEventListener("change", actualizarCamposEspecificos);
+actualizarCamposEspecificos();
+
+email.addEventListener("focus", mostrarAyudaEmail);
+email.addEventListener("blur", ocultarAyudaEmail);
+
+formulario.addEventListener("submit", manejarEnvio);
+listaPublicaciones.addEventListener("click", manejarAccion);
+
+botonActualizar.addEventListener("click", () => cargarPublicaciones());
+botonForzarError.addEventListener("click", () => cargarPublicaciones(true));
