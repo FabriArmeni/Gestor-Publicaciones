@@ -18,6 +18,7 @@ const botonActualizar = document.getElementById("botonActualizar");
 const botonForzarError = document.getElementById("botonForzarError");
 const errorTitulo = document.getElementById("errorTitulo");
 const errorAutor = document.getElementById("errorAutor");
+const enviar = document.getElementById("enviar");
 
 const repositorio = new RepositorioPublicaciones();
 
@@ -185,21 +186,35 @@ function validarAutor(mostrarError = true) {
     return valido;
 }
 
+function formularioValido() {
+    const precioValido = tipo.value !== "venta" || Number(camposEspecificos.querySelector("#precio").value) > 0;
+    return (
+        titulo.value.trim().length >= 5 &&
+        autor.value.trim().length >= 3 &&
+        precioValido
+    );
+}
+
+function actualizarEstadoFormulario() {
+    enviar.disabled = !formularioValido();
+}
+
+formulario.addEventListener("input", actualizarEstadoFormulario);
+
 actualizarCamposEspecificos();
 
 // listeners
-// titulo.addEventListener("input", actualizarVistaPrevia);
 titulo.addEventListener("input", () => validarTitulo(false));
 titulo.addEventListener("blur", () => validarTitulo(true));
 
-// autor.addEventListener("input", actualizarVistaPrevia);
 autor.addEventListener("input", () => validarAutor(false));
 autor.addEventListener("blur", () => validarAutor(true));
 
-// tipo.addEventListener("change", actualizarVistaPrevia);
 tipo.addEventListener("change", actualizarCamposEspecificos);
 
-[titulo, autor, tipo].forEach(control => control.addEventListener("input", actualizarVistaPrevia))
+[titulo, autor, tipo].forEach((control) =>
+    control.addEventListener("input", actualizarVistaPrevia),
+);
 
 email.addEventListener("focus", mostrarAyudaEmail);
 email.addEventListener("blur", ocultarAyudaEmail);
