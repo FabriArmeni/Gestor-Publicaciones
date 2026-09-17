@@ -147,12 +147,6 @@ function manejarAccion(evento) {
 }
 listaPublicaciones.addEventListener("click", manejarAccion);
 
-function esperar(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
-
 const estado = document.getElementById("estado")
 const botonActualizar = document.getElementById("botonActualizar")
 
