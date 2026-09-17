@@ -7,20 +7,53 @@
   </head>
   <body>
     <main>
+      <h1>Gestor de Publicaciones</h1>
       <form id="form-publicacion">
-        <input id="titulo" placeholder="Título" required />
-        <textarea id="descripcion" placeholder="Descripción"></textarea>
-        <input id="autor" placeholder="Nombre del autor" required />
-        <input id="email" type="email" placeholder="Email" required />
-        <small id="ayuda-email"></small>
-        <select id="tipo">
-          <option value="venta">Venta</option>
-          <option value="servicio">Servicio</option>
-        </select>
+        <h2>Crear una nueva publicación</h2>
+        <div class="input-group">
+          <label for="titulo">Titulo:</label>
+          <input id="titulo" placeholder="Título" required />
+          <small id="errorTitulo"></small>
+        </div>
+        
+        <div class="input-group">
+          <label for="descripcion">Descripción:</label>
+          <textarea id="descripcion" placeholder="Descripción"></textarea>
+          
+        </div>
+        
+        <div class="input-group">
+          <label for="autor">Autor:</label>
+          <input id="autor" placeholder="Nombre del autor" required />
+          <small id="errorAutor"></small>
+
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email:</label>
+          <input id="email" type="email" placeholder="Email" required />
+          <small id="ayuda-email"></small>
+        </div>
+
+        <div class="input-group">
+          <label for="tipo">Tipo de publicación:</label>
+          <select id="tipo">
+            <option value="venta">Venta</option>
+            <option value="servicio">Servicio</option>
+          </select>
+        </div>
+
         <div id="campos-especificos"></div>
-        <button>Publicar</button>
+        
+        <button id="enviar">Enviar</button>
       </form>
+      <p>Vista previa:</p>
       <output id="vista-previa"></output>
+      <div>
+        <p id="estado"></p>
+        <button id="botonActualizar" type="button">Actualizar</button>
+        <button id="botonForzarError" type="button">Forzar Error</button>
+      </div>
       <section id="lista-publicaciones"></section>
     </main>
     <script type="module" src="js/main.js"></script>
