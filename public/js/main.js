@@ -22,8 +22,8 @@ const errorAutor = document.getElementById("errorAutor");
 const repositorio = new RepositorioPublicaciones();
 
 function actualizarVistaPrevia() {
-    const nombre = autor.value || "Autor";
     const texto = titulo.value || "Sin título";
+    const nombre = autor.value || "Autor";
     vistaPrevia.textContent = `${texto} — ${nombre} (${tipo.value})`;
 }
 
@@ -175,8 +175,6 @@ function validarTitulo(mostrarError = true) {
         !valido && mostrarError ? "Ingrese al menos 5 caracteres" : "";
     return valido;
 }
-titulo.addEventListener("input", () => validarTitulo(false));
-titulo.addEventListener("blur", () => validarTitulo(true));
 
 function validarAutor(mostrarError = true) {
     const valido = autor.value.trim().length >= 3;
@@ -186,16 +184,22 @@ function validarAutor(mostrarError = true) {
         !valido && mostrarError ? "Ingrese al menos 3 caracteres" : "";
     return valido;
 }
+
+actualizarCamposEspecificos();
+
+// listeners
+// titulo.addEventListener("input", actualizarVistaPrevia);
+titulo.addEventListener("input", () => validarTitulo(false));
+titulo.addEventListener("blur", () => validarTitulo(true));
+
+// autor.addEventListener("input", actualizarVistaPrevia);
 autor.addEventListener("input", () => validarAutor(false));
 autor.addEventListener("blur", () => validarAutor(true));
 
-// listeners
-titulo.addEventListener("input", actualizarVistaPrevia);
-autor.addEventListener("input", actualizarVistaPrevia);
-tipo.addEventListener("change", actualizarVistaPrevia);
-
+// tipo.addEventListener("change", actualizarVistaPrevia);
 tipo.addEventListener("change", actualizarCamposEspecificos);
-actualizarCamposEspecificos();
+
+[titulo, autor, tipo].forEach(control => control.addEventListener("input", actualizarVistaPrevia))
 
 email.addEventListener("focus", mostrarAyudaEmail);
 email.addEventListener("blur", ocultarAyudaEmail);
