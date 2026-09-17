@@ -120,13 +120,33 @@ function renderizarPublicaciones() {
     );
 }
 
-function manejarEnvio(evento) {
+function esperar(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
+async function manejarEnvio(evento) {
     evento.preventDefault();
-    const publicacion = crearPublicacionDesdeFormulario();
-    repositorio.agregar(publicacion);
-    agregarTarjeta(publicacion);
-    formulario.reset();
-    renderizarPublicaciones();
+    if(!validarTitulo(true)) return
+    enviar.disabled = true
+    estado.textContent = "Publicando..."
+    try {
+        await esperar(800)
+        const publicacion = crearPublicacionDesdeFormulario();
+        repositorio.agregar(publicacion);
+        agregarTarjeta(publicacion);
+        renderizarPublicaciones();
+        estado.textContent = "Publicación agregada"
+        formulario.reset();
+        actualizarVistaPrevia()
+    } catch (error) {
+        estado.textContent = `Error: ${error.message}`
+    } finally {
+        actualizarEstadoFormulario()
+    }
+
+
 }
 
 function manejarAccion(evento) {
@@ -134,14 +154,14 @@ function manejarAccion(evento) {
     if (!boton || !listaPublicaciones.contains(boton)) return;
     const tarjeta = boton.closest("[data-id]");
     const id = Number(tarjeta.dataset.id);
-    console.log(id, boton.dataset.accion);
+    // console.log(id, boton.dataset.accion);
 
     let publicacion = repositorio.publicaciones.find((p) => p.id === id);
     const accion = boton.dataset.accion;
 
     if (accion === "baja") publicacion.darDeBaja();
     if (accion === "destacar") publicacion.destacar();
-    console.log(publicacion);
+    // console.log(publicacion);
 
     renderizarPublicaciones();
 }
@@ -202,6 +222,8 @@ function actualizarEstadoFormulario() {
 formulario.addEventListener("input", actualizarEstadoFormulario);
 
 actualizarCamposEspecificos();
+actualizarVistaPrevia()
+actualizarEstadoFormulario()
 
 // listeners
 titulo.addEventListener("input", () => validarTitulo(false));
