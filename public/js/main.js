@@ -16,6 +16,8 @@ const listaPublicaciones = document.getElementById("lista-publicaciones");
 const estado = document.getElementById("estado");
 const botonActualizar = document.getElementById("botonActualizar");
 const botonForzarError = document.getElementById("botonForzarError");
+const errorTitulo = document.getElementById("errorTitulo");
+const errorAutor = document.getElementById("errorAutor");
 
 const repositorio = new RepositorioPublicaciones();
 
@@ -28,14 +30,30 @@ function actualizarVistaPrevia() {
 function actualizarCamposEspecificos() {
     if (tipo.value === "venta") {
         camposEspecificos.innerHTML = `
-      <input id="precio" type="number" placeholder="Precio">
-      <input id="stock" type="number" value="1">`;
+            <input id="precio" type="number" placeholder="Precio">
+            <small id="errorPrecio"></small>
+            <input id="stock" type="number" value="1">`;
+
+        const precio = camposEspecificos.querySelector("#precio");
+        const errorPrecio = camposEspecificos.querySelector("#errorPrecio");
+
+        function validarPrecio(mostrarError = true) {
+            const valido = Number(precio.value) > 0;
+            precio.classList.toggle("valido", valido);
+            precio.classList.toggle("invalido", !valido && mostrarError);
+            errorPrecio.textContent =
+                !valido && mostrarError ? "Ingrese un precio mayor que 0" : "";
+            return valido;
+        }
+
+        precio.addEventListener("input", () => validarPrecio(false));
+        precio.addEventListener("blur", () => validarPrecio(true));
     } else {
         camposEspecificos.innerHTML = `
-      <select id="modalidad">
-        <option>presencial</option><option>virtual</option>
-      </select>
-      <input id="duracion" type="number" placeholder="Minutos">`;
+            <select id="modalidad">
+                <option>presencial</option><option>virtual</option>
+            </select>
+            <input id="duracion" type="number" placeholder="Minutos">`;
     }
 }
 
@@ -148,6 +166,28 @@ async function cargarPublicaciones(forzarError = false) {
         botonActualizar.disabled = false;
     }
 }
+
+function validarTitulo(mostrarError = true) {
+    const valido = titulo.value.trim().length >= 5;
+    titulo.classList.toggle("valido", valido);
+    titulo.classList.toggle("invalido", !valido && mostrarError);
+    errorTitulo.textContent =
+        !valido && mostrarError ? "Ingrese al menos 5 caracteres" : "";
+    return valido;
+}
+titulo.addEventListener("input", () => validarTitulo(false));
+titulo.addEventListener("blur", () => validarTitulo(true));
+
+function validarAutor(mostrarError = true) {
+    const valido = autor.value.trim().length >= 3;
+    autor.classList.toggle("valido", valido);
+    autor.classList.toggle("invalido", !valido && mostrarError);
+    errorAutor.textContent =
+        !valido && mostrarError ? "Ingrese al menos 3 caracteres" : "";
+    return valido;
+}
+autor.addEventListener("input", () => validarAutor(false));
+autor.addEventListener("blur", () => validarAutor(true));
 
 // listeners
 titulo.addEventListener("input", actualizarVistaPrevia);
