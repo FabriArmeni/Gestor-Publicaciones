@@ -2,6 +2,7 @@ import express from "express";
 
 const app = express();
 app.use(express.static("public"));
+app.use("/src", express.static('src')); // tuve que agregar esta linea para que ande la estructura con src al nivel de public y no dentro
 
 const publicaciones = [
     {

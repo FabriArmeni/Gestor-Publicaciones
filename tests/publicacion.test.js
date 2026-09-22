@@ -1,6 +1,6 @@
 // import { Publicacion } from "../src/Publicacion.js";
 
-import Publicacion from "../public/src/Publicacion";
+import Publicacion from "../src/Publicacion";
 
 describe("Publicacion", () => {
     test("una publicación nueva comienza activa y sin etiquetas", () => {
