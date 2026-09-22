@@ -1,8 +1,8 @@
 import Usuario from "../../src/Usuario.js";
-import Publicacion from "../../src/Publicacion.js";
 import PublicacionVenta from "../../src/PublicacionVenta.js"
 import PublicacionServicio from "../../src/PublicacionServicio.js";
 import RepositorioPublicaciones from "../../src/RepositorioPublicaciones.js";
+import Reporte from "../../src/Reporte.js";
 
 const formulario = document.getElementById("form-publicacion");
 const titulo = document.getElementById("titulo");
@@ -146,8 +146,6 @@ async function manejarEnvio(evento) {
     } finally {
         actualizarEstadoFormulario()
     }
-
-
 }
 
 function manejarAccion(evento) {
@@ -155,14 +153,12 @@ function manejarAccion(evento) {
     if (!boton || !listaPublicaciones.contains(boton)) return;
     const tarjeta = boton.closest("[data-id]");
     const id = Number(tarjeta.dataset.id);
-    // console.log(id, boton.dataset.accion);
 
     let publicacion = repositorio.publicaciones.find((p) => p.id === id);
     const accion = boton.dataset.accion;
 
     if (accion === "baja") publicacion.darDeBaja();
     if (accion === "destacar") publicacion.destacar();
-    // console.log(publicacion);
 
     renderizarPublicaciones();
 }
@@ -248,15 +244,5 @@ listaPublicaciones.addEventListener("click", manejarAccion);
 botonActualizar.addEventListener("click", () => cargarPublicaciones());
 botonForzarError.addEventListener("click", () => cargarPublicaciones(true));
 
-// part1
-const pub1 = new Publicacion("vendo", "vendo todo, me voy", new Usuario("martin", "tincho@gmail.com"))
-pub1.agregarEtiqueta("urgente")
-pub1.agregarEtiqueta("urgente")
-
-// console.log(pub1.etiquetas);
-
-//part 2
-repositorio.agregar(pub1)
-pub1.darDeBaja()
-const busqueda = repositorio.buscarPorEtiqueta("urgente")
-console.log(busqueda);
+// parte 1: crear un reporte con motivo vacio causa error
+const reporte = new Reporte(new Usuario("juan","juan@gmail.com"), "")
