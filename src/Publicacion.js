@@ -1,5 +1,7 @@
+import Reporte from "./Reporte.js";
+
 export default class Publicacion {
-    static contador = 1
+    static contador = 1;
 
     constructor(titulo, descripcion, autor) {
         this.titulo = titulo;
@@ -7,31 +9,39 @@ export default class Publicacion {
         this.autor = autor; // objeto Usuario
         this.fechaPublicacion = new Date();
         this.activa = true;
-        this.destacado = false
-        this.id = Publicacion.contador++
-        this.etiquetas = []
+        this.destacado = false;
+        this.id = Publicacion.contador++;
+        this.etiquetas = [];
+        this.reportes = [];
+        this.estado = "pendiente";
     }
 
     mostrarResumen() {
         return `Titulo: "${this.titulo}" por ${this.autor.nombre}`;
     }
 
-    estaActiva(){
+    estaActiva() {
         return this.activa;
     }
 
     diasPublicada() {
-        const ms = new Date() - this.fechaPublicacion
-        return Math.floor(ms / (1000 * 60 * 60 * 24))
+        const ms = new Date() - this.fechaPublicacion;
+        return Math.floor(ms / (1000 * 60 * 60 * 24));
     }
 
-    darDeBaja() { this.activa = false; }
+    darDeBaja() {
+        this.activa = false;
+    }
 
-    destacar() { this.destacado = true }
-    opacar() { this.destacado = false }
+    destacar() {
+        this.destacado = true;
+    }
+    opacar() {
+        this.destacado = false;
+    }
 
     get resumen() {
-        return `Autor: ${this.autor.nombre} - Titulo: "${this.titulo}" - Estado: ${this.activa}`
+        return `Autor: ${this.autor.nombre} - Titulo: "${this.titulo}" - Estado: ${this.activa}`;
     }
 
     agregarEtiqueta(etiqueta) {
@@ -47,7 +57,18 @@ export default class Publicacion {
 
     tieneEtiqueta(etiqueta) {
         const buscada = etiqueta.trim().toLowerCase();
-        return this.etiquetas.some(e => e.toLowerCase() === buscada);
+        return this.etiquetas.some((e) => e.toLowerCase() === buscada);
     }
 
+    reportar(usuario, motivo) {
+        const yaReporto = this.reportes.some((r) => r.usuario === usuario);
+        if (yaReporto) {
+            throw new Error("El usuario ya reportó esta publicación");
+        }
+        this.reportes.push(new Reporte(usuario, motivo));
+    }
+
+    requiereRevision() {
+        return this.reportes.length >= 3;
+    }
 }

@@ -3,6 +3,7 @@ import PublicacionVenta from "../../src/PublicacionVenta.js"
 import PublicacionServicio from "../../src/PublicacionServicio.js";
 import RepositorioPublicaciones from "../../src/RepositorioPublicaciones.js";
 import Reporte from "../../src/Reporte.js";
+import Publicacion from "../../src/Publicacion.js";
 
 const formulario = document.getElementById("form-publicacion");
 const titulo = document.getElementById("titulo");
@@ -245,4 +246,22 @@ botonActualizar.addEventListener("click", () => cargarPublicaciones());
 botonForzarError.addEventListener("click", () => cargarPublicaciones(true));
 
 // parte 1: crear un reporte con motivo vacio causa error
-const reporte = new Reporte(new Usuario("juan","juan@gmail.com"), "")
+// const reporte = new Reporte(new Usuario("juan","juan@gmail.com"), "")
+
+// parte 2: reportar con 3 usuarios distintos una publicacion
+const usuario1 = new Usuario("juan","juan@gmail.com")
+const usuario2 = new Usuario("pepe","pepe@gmail.com")
+const usuario3 = new Usuario("maria","maria@gmail.com")
+const usuario4 = new Usuario("rosa","rosa@gmail.com")
+
+const publi = new Publicacion("venta local", "vendo todooo", usuario1)
+
+console.log("estado inicial", publi.requiereRevision());
+
+publi.reportar(usuario2,"precios caros")
+publi.reportar(usuario3,"precios muy caros")
+publi.reportar(usuario4,"no me gusta")
+
+console.log("estado final", publi.requiereRevision());
+
+publi.reportar(usuario2,"precios caros")
