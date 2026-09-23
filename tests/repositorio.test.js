@@ -33,7 +33,7 @@ describe("RepositorioPublicaciones", () => {
             "Luis",
             "presencial",
             120,
-            {nombre: "juan", email: "juan@gmail.com"}
+            { nombre: "juan", email: "juan@gmail.com" },
         );
         expect(venta.mostrarResumen()).toContain("5000");
         expect(servicio.mostrarResumen()).toContain("Clases de Álgebra");

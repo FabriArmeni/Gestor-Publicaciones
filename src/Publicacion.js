@@ -68,6 +68,10 @@ export default class Publicacion {
         this.reportes.push(new Reporte(usuario, motivo));
     }
 
+    quitarReporte(usuario) {
+        this.reportes = this.reportes.filter(r => r.usuario !== usuario)
+    }
+
     requiereRevision() {
         return this.reportes.length >= 3;
     }
