@@ -1,5 +1,5 @@
 import Usuario from "../../src/Usuario.js";
-import PublicacionVenta from "../../src/PublicacionVenta.js"
+import PublicacionVenta from "../../src/PublicacionVenta.js";
 import PublicacionServicio from "../../src/PublicacionServicio.js";
 import RepositorioPublicaciones from "../../src/RepositorioPublicaciones.js";
 
@@ -128,22 +128,22 @@ function esperar(ms) {
 
 async function manejarEnvio(evento) {
     evento.preventDefault();
-    if(!validarTitulo(true)) return
-    enviar.disabled = true
-    estado.textContent = "Publicando..."
+    if (!validarTitulo(true)) return;
+    enviar.disabled = true;
+    estado.textContent = "Publicando...";
     try {
-        await esperar(800)
+        await esperar(800);
         const publicacion = crearPublicacionDesdeFormulario();
         repositorio.agregar(publicacion);
         agregarTarjeta(publicacion);
         renderizarPublicaciones();
-        estado.textContent = "Publicación agregada"
+        estado.textContent = "Publicación agregada";
         formulario.reset();
-        actualizarVistaPrevia()
+        actualizarVistaPrevia();
     } catch (error) {
-        estado.textContent = `Error: ${error.message}`
+        estado.textContent = `Error: ${error.message}`;
     } finally {
-        actualizarEstadoFormulario()
+        actualizarEstadoFormulario();
     }
 }
 
@@ -203,7 +203,9 @@ function validarAutor(mostrarError = true) {
 }
 
 function formularioValido() {
-    const precioValido = tipo.value !== "venta" || Number(camposEspecificos.querySelector("#precio").value) > 0;
+    const precioValido =
+        tipo.value !== "venta" ||
+        Number(camposEspecificos.querySelector("#precio").value) > 0;
     return (
         titulo.value.trim().length >= 5 &&
         autor.value.trim().length >= 3 &&
@@ -215,10 +217,9 @@ function actualizarEstadoFormulario() {
     enviar.disabled = !formularioValido();
 }
 
-
 actualizarCamposEspecificos();
-actualizarVistaPrevia()
-actualizarEstadoFormulario()
+actualizarVistaPrevia();
+actualizarEstadoFormulario();
 
 // listeners
 titulo.addEventListener("input", () => validarTitulo(false));
@@ -242,3 +243,17 @@ listaPublicaciones.addEventListener("click", manejarAccion);
 
 botonActualizar.addEventListener("click", () => cargarPublicaciones());
 botonForzarError.addEventListener("click", () => cargarPublicaciones(true));
+
+document.querySelector("#consultar").addEventListener("click", async () => {
+    estado.textContent = "Consultando...";
+    try {
+        const respuesta = await fetch("/estado-comunidad");
+        if (!respuesta.ok) {
+            throw new Error("La respuesta no fue exitosa");
+        }
+        const texto = await respuesta.text();
+        estado.textContent = texto;
+    } catch (error) {
+        estado.textContent = `No se pudo consultar el estado: ${error.message}`;
+    }
+});

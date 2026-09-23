@@ -46,7 +46,8 @@ function esperar(ms) {
     });
 }
 
-app.get("/estado-comunidad", (req, res) => {
+app.get("/estado-comunidad", async (req, res) => {
+    await esperar(900) // para simular delay y que se vea el "Consultando...""
     const repositorio = new RepositorioPublicaciones()
     res.send(repositorio.obtenerEstado());
 });
