@@ -46,11 +46,17 @@ function esperar(ms) {
     });
 }
 
+const repositorio = new RepositorioPublicaciones()
+
 app.get("/estado-comunidad", async (req, res) => {
     await esperar(900) // para simular delay y que se vea el "Consultando...""
-    const repositorio = new RepositorioPublicaciones()
     res.send(repositorio.obtenerEstado());
 });
+
+app.get("/estado-inactivas", async(req,res) => {
+    await esperar(900)
+    res.send(repositorio.obtenerEstadoInactivas())
+})
 
 app.get("/api/publicaciones", async (req, res) => {
     await esperar(900);

@@ -92,6 +92,11 @@ class RepositorioPublicaciones {
         const activas = this.publicaciones.filter((p) => p.activa).length;
         return `Publicaciones activas: ${activas}`;
     }
+
+    obtenerEstadoInactivas() {
+        const inactivas = this.publicaciones.filter((p) => !p.activa).length;
+        return `Publicaciones inactivas: ${inactivas}`;
+    }
 }
 
 export default RepositorioPublicaciones;

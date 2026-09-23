@@ -257,3 +257,17 @@ document.querySelector("#consultar").addEventListener("click", async () => {
         estado.textContent = `No se pudo consultar el estado: ${error.message}`;
     }
 });
+
+document.querySelector("#consultarInactivas").addEventListener("click", async () => {
+    estado.textContent = "Consultando...";
+    try {
+        const respuesta = await fetch("/estado-inactivas");
+        if (!respuesta.ok) {
+            throw new Error("La respuesta no fue exitosa");
+        }
+        const texto = await respuesta.text();
+        estado.textContent = texto;
+    } catch (error) {
+        estado.textContent = `No se pudo consultar el estado: ${error.message}`;
+    }
+});
