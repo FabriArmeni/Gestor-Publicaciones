@@ -1,8 +1,12 @@
 import express from "express";
+import path from 'node:path'
+import { fileURLToPath } from "node:url";
 
 const app = express();
-app.use(express.static("public"));
-app.use("/src", express.static('src')); // tuve que agregar esta linea para que ande la estructura con src al nivel de public y no dentro
+const dir = path.dirname(fileURLToPath(import.meta.url))
+
+app.use(express.static(path.join(dir,"public")));
+app.use("/src", express.static(path.join(dir,"src")));
 
 const publicaciones = [
     {
@@ -42,7 +46,6 @@ function esperar(ms) {
 }
 
 app.get("/api/publicaciones", async (req, res) => {
-    // await new Promise((r) => setTimeout(r, 900));
     await esperar(900);
     if (req.query.error === "1")
         return res

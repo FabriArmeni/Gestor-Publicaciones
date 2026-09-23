@@ -1,5 +1,3 @@
-// import { Publicacion } from "../src/Publicacion.js";
-
 import Publicacion from "../src/Publicacion";
 
 describe("Publicacion", () => {
