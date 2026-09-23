@@ -1,12 +1,13 @@
 import express from "express";
-import path from 'node:path'
-import { fileURLToPath } from "node:url";
+import path from "path";
+import { fileURLToPath } from "url";
+import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
 
 const app = express();
-const dir = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(path.join(dir,"public")));
-app.use("/src", express.static(path.join(dir,"src")));
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/src", express.static(path.join(__dirname, "src")));
 
 const publicaciones = [
     {
@@ -44,6 +45,11 @@ function esperar(ms) {
         setTimeout(resolve, ms);
     });
 }
+
+app.get("/estado-comunidad", (req, res) => {
+    const repositorio = new RepositorioPublicaciones()
+    res.send(repositorio.obtenerEstado());
+});
 
 app.get("/api/publicaciones", async (req, res) => {
     await esperar(900);
