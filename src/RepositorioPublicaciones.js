@@ -83,8 +83,24 @@ class RepositorioPublicaciones {
     }
 
     pendientesDeRevision() {
-        return this.publicaciones.filter(p => p.activa && p.requiereRevision());
+        return this.publicaciones.filter(
+            (p) => p.activa && p.requiereRevision(),
+        );
+    }
+
+    obtenerEstado() {
+        const activas = this.publicaciones.filter((p) => p.activa).length;
+        return `Publicaciones activas: ${activas}`;
     }
 }
 
 export default RepositorioPublicaciones;
+
+// comprobar que obtenerEstado solo cuenta las activas
+const repo = new RepositorioPublicaciones()
+repo.agregar(new Publicacion("vendo", "vendo todo", "martin"))
+repo.agregar(new Publicacion("vendo", "vendo todo", "martin"))
+const publiBaja = new Publicacion("vendo", "vendo todo", "martin")
+publiBaja.darDeBaja()
+repo.agregar(publiBaja)
+console.log(repo.obtenerEstado());
