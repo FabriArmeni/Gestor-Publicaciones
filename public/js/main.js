@@ -1,9 +1,7 @@
 import Usuario from "../../src/Usuario.js";
-import PublicacionVenta from "../../src/PublicacionVenta.js"
+import PublicacionVenta from "../../src/PublicacionVenta.js";
 import PublicacionServicio from "../../src/PublicacionServicio.js";
 import RepositorioPublicaciones from "../../src/RepositorioPublicaciones.js";
-import Reporte from "../../src/Reporte.js";
-import Publicacion from "../../src/Publicacion.js";
 
 const formulario = document.getElementById("form-publicacion");
 const titulo = document.getElementById("titulo");
@@ -130,22 +128,22 @@ function esperar(ms) {
 
 async function manejarEnvio(evento) {
     evento.preventDefault();
-    if(!validarTitulo(true)) return
-    enviar.disabled = true
-    estado.textContent = "Publicando..."
+    if (!validarTitulo(true)) return;
+    enviar.disabled = true;
+    estado.textContent = "Publicando...";
     try {
-        await esperar(800)
+        await esperar(800);
         const publicacion = crearPublicacionDesdeFormulario();
         repositorio.agregar(publicacion);
         agregarTarjeta(publicacion);
         renderizarPublicaciones();
-        estado.textContent = "Publicación agregada"
+        estado.textContent = "Publicación agregada";
         formulario.reset();
-        actualizarVistaPrevia()
+        actualizarVistaPrevia();
     } catch (error) {
-        estado.textContent = `Error: ${error.message}`
+        estado.textContent = `Error: ${error.message}`;
     } finally {
-        actualizarEstadoFormulario()
+        actualizarEstadoFormulario();
     }
 }
 
@@ -205,7 +203,9 @@ function validarAutor(mostrarError = true) {
 }
 
 function formularioValido() {
-    const precioValido = tipo.value !== "venta" || Number(camposEspecificos.querySelector("#precio").value) > 0;
+    const precioValido =
+        tipo.value !== "venta" ||
+        Number(camposEspecificos.querySelector("#precio").value) > 0;
     return (
         titulo.value.trim().length >= 5 &&
         autor.value.trim().length >= 3 &&
@@ -217,10 +217,9 @@ function actualizarEstadoFormulario() {
     enviar.disabled = !formularioValido();
 }
 
-
 actualizarCamposEspecificos();
-actualizarVistaPrevia()
-actualizarEstadoFormulario()
+actualizarVistaPrevia();
+actualizarEstadoFormulario();
 
 // listeners
 titulo.addEventListener("input", () => validarTitulo(false));
@@ -245,23 +244,30 @@ listaPublicaciones.addEventListener("click", manejarAccion);
 botonActualizar.addEventListener("click", () => cargarPublicaciones());
 botonForzarError.addEventListener("click", () => cargarPublicaciones(true));
 
-// parte 1: crear un reporte con motivo vacio causa error
-// const reporte = new Reporte(new Usuario("juan","juan@gmail.com"), "")
+document.querySelector("#consultar").addEventListener("click", async () => {
+    estado.textContent = "Consultando...";
+    try {
+        const respuesta = await fetch("/estado-comunidad");
+        if (!respuesta.ok) {
+            throw new Error("La respuesta no fue exitosa");
+        }
+        const texto = await respuesta.text();
+        estado.textContent = texto;
+    } catch (error) {
+        estado.textContent = `No se pudo consultar el estado: ${error.message}`;
+    }
+});
 
-// parte 2: reportar con 3 usuarios distintos una publicacion
-const usuario1 = new Usuario("juan","juan@gmail.com")
-const usuario2 = new Usuario("pepe","pepe@gmail.com")
-const usuario3 = new Usuario("maria","maria@gmail.com")
-const usuario4 = new Usuario("rosa","rosa@gmail.com")
-
-const publi = new Publicacion("venta local", "vendo todooo", usuario1)
-
-console.log("estado inicial", publi.requiereRevision());
-
-publi.reportar(usuario2,"precios caros")
-publi.reportar(usuario3,"precios muy caros")
-publi.reportar(usuario4,"no me gusta")
-
-console.log("estado final", publi.requiereRevision());
-
-publi.reportar(usuario2,"precios caros")
+document.querySelector("#consultarInactivas").addEventListener("click", async () => {
+    estado.textContent = "Consultando...";
+    try {
+        const respuesta = await fetch("/estado-inactivas");
+        if (!respuesta.ok) {
+            throw new Error("La respuesta no fue exitosa");
+        }
+        const texto = await respuesta.text();
+        estado.textContent = texto;
+    } catch (error) {
+        estado.textContent = `No se pudo consultar el estado: ${error.message}`;
+    }
+});

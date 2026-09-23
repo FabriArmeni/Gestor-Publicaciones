@@ -1,12 +1,13 @@
 import express from "express";
-import path from 'node:path'
-import { fileURLToPath } from "node:url";
+import path from "path";
+import { fileURLToPath } from "url";
+import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
 
 const app = express();
-const dir = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(path.join(dir,"public")));
-app.use("/src", express.static(path.join(dir,"src")));
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/src", express.static(path.join(__dirname, "src")));
 
 const publicaciones = [
     {
@@ -44,6 +45,18 @@ function esperar(ms) {
         setTimeout(resolve, ms);
     });
 }
+
+const repositorio = new RepositorioPublicaciones()
+
+app.get("/estado-comunidad", async (req, res) => {
+    await esperar(900) // para simular delay y que se vea el "Consultando...""
+    res.send(repositorio.obtenerEstado());
+});
+
+app.get("/estado-inactivas", async(req,res) => {
+    await esperar(900)
+    res.send(repositorio.obtenerEstadoInactivas())
+})
 
 app.get("/api/publicaciones", async (req, res) => {
     await esperar(900);
