@@ -109,7 +109,3 @@ export default class Publicacion {
         return this.estado;
     }
 }
-
-// pruebas de que funciona
-// const pub1 = new Publicacion("v".repeat(80), "a".repeat(500), "martin", "aviso")
-// console.log("pub1", pub1);

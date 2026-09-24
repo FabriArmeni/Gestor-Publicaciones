@@ -1,63 +1,84 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Publicaciones</title>
-  </head>
-  <body>
-    <main>
-      <h1>Gestor de Publicaciones</h1>
-      <form id="form-publicacion">
-        <h2>Crear una nueva publicación</h2>
-        <div class="input-group">
-          <label for="titulo">Titulo:</label>
-          <input id="titulo" placeholder="Título" required />
-          <small id="errorTitulo"></small>
-        </div>
-        
-        <div class="input-group">
-          <label for="descripcion">Descripción:</label>
-          <textarea id="descripcion" placeholder="Descripción"></textarea>
-          
-        </div>
-        
-        <div class="input-group">
-          <label for="autor">Autor:</label>
-          <input id="autor" placeholder="Nombre del autor" required />
-          <small id="errorAutor"></small>
 
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Publicaciones</title>
+</head>
 
-        <div class="input-group">
-          <label for="email">Email:</label>
-          <input id="email" type="email" placeholder="Email" required />
-          <small id="ayuda-email"></small>
-        </div>
-
-        <div class="input-group">
-          <label for="tipo">Tipo de publicación:</label>
-          <select id="tipo">
-            <option value="venta">Venta</option>
-            <option value="servicio">Servicio</option>
-          </select>
-        </div>
-
-        <div id="campos-especificos"></div>
-        
-        <button id="enviar">Enviar</button>
-      </form>
-      <p>Vista previa:</p>
-      <output id="vista-previa"></output>
-      <div>
-        <p id="estado"></p>
-        <button id="botonActualizar" type="button">Actualizar</button>
-        <button id="botonForzarError" type="button">Forzar Error</button>
-        <button id="consultar" type="button">Consultar Activas</button>
-        <button id="consultarInactivas" type="button">Consultar Inactivas</button>
+<body>
+  <main>
+    <h1>Gestor de Publicaciones</h1>
+    <form id="form-publicacion">
+      <h2>Crear una nueva publicación</h2>
+      <div class="input-group">
+        <label for="titulo">Titulo:</label>
+        <input id="titulo" placeholder="Título" required />
+        <small id="errorTitulo"></small>
       </div>
-      <section id="lista-publicaciones"></section>
-    </main>
-    <script type="module" src="js/main.js"></script>
-  </body>
+
+      <div class="input-group">
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" placeholder="Descripción"></textarea>
+
+      </div>
+
+      <div class="input-group">
+        <label for="autor">Autor:</label>
+        <input id="autor" placeholder="Nombre del autor" required />
+        <small id="errorAutor"></small>
+
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email:</label>
+        <input id="email" type="email" placeholder="Email" required />
+        <small id="ayuda-email"></small>
+      </div>
+
+      <div class="input-group">
+        <label for="tipo">Tipo de publicación:</label>
+        <select id="tipo">
+          <option value="venta">Venta</option>
+          <option value="servicio">Servicio</option>
+        </select>
+      </div>
+
+      <div id="campos-especificos"></div>
+
+      <button id="enviar">Enviar</button>
+    </form>
+    <p>Vista previa:</p>
+    <output id="vista-previa"></output>
+    <div>
+      <p id="estado"></p>
+      <button id="botonActualizar" type="button">Actualizar</button>
+      <button id="botonForzarError" type="button">Forzar Error</button>
+      <button id="consultar" type="button">Consultar Activas</button>
+      <button id="consultarInactivas" type="button">Consultar Inactivas</button>
+    </div>
+    <section id="lista-publicaciones"></section>
+
+    <form id="pedido" action="/publicaciones" method="post">
+      <label>Autor <input name="autor" required></label>
+      <label>Título <input name="titulo" minlength="5" maxlength="80" required></label>
+      <label>Descripción <textarea name="descripcion" minlength="20" maxlength="500" required></textarea></label>
+      <label>Categoría
+        <select name="categoria" required>
+          <option value="general">General</option>
+          <option value="aviso">Aviso</option>
+          <option value="evento">Evento</option>
+          <option value="compraventa">Compra-venta</option>
+        </select>
+      </label>
+      <button>Publicar</button>
+    </form>
+    <p id="salida"></p>
+
+
+  </main>
+  <script type="module" src="js/main.js"></script>
+</body>
+
 </html>
