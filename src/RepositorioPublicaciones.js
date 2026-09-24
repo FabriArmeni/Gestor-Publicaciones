@@ -26,7 +26,33 @@ class RepositorioPublicaciones {
     }
 
     buscarPorId(id) {
-        return this.publicaciones.find(p => p.id === Number(id))
+        return this.publicaciones.find((p) => p.id === Number(id));
+    }
+
+    actualizar(id, cambios) {
+        const anterior = this.buscarPorId(id);
+        if (!anterior) throw new Error("Publicación inexistente");
+        const actualizada = new Publicacion(
+            anterior.id,
+            cambios.titulo ?? anterior.titulo,
+            cambios.descripcion ?? anterior.descripcion,
+            cambios.autor ?? anterior.autor,
+            cambios.categoria ?? anterior.categoria,
+        );
+        // PASO 3: ¿qué pasa con activa, etiquetas, reportes y estado?
+        // El constructor no los conoce: decidí si se pierden o se conservan,
+        // y dejá la decisión documentada en un comentario.
+
+        // Los perderia pero queremos mantenerlos, la idea es actualizar solo datos nuevos.
+        actualizada.fechaPublicacion = anterior.fechaPublicacion
+        actualizada.activa = anterior.activa
+        actualizada.destacado = anterior.destacado
+        actualizada.etiquetas = anterior.etiquetas
+        actualizada.reportes = anterior.reportes
+        actualizada.estado = anterior.estado
+
+        this.publicaciones[this.publicaciones.indexOf(anterior)] = actualizada;
+        return actualizada;
     }
 
     buscarPorUsuario(nombre) {
@@ -117,10 +143,10 @@ class RepositorioPublicaciones {
 
 export default RepositorioPublicaciones;
 
-// Verificacion agregar, listar y buscarporid
-// const repo = new RepositorioPublicaciones()
-// repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso")
-// repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso")
-// console.log(repo.listar());
-// console.log(repo.buscarPorId("2"));
 
+// Verificacion 
+// const repo = new RepositorioPublicaciones()
+// repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso").agregarEtiqueta("venta")
+// console.log(repo.listar());
+// repo.actualizar(1, { titulo: "comprooooooooo" })
+// console.log(repo.listar());

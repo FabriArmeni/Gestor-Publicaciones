@@ -24,6 +24,7 @@ export default class Publicacion {
             throw new Error(`La categoría debe ser una de: ${CATEGORIAS_PERMITIDAS.join(", ")}`)
         }
 
+        this.id = id;
         this.titulo = tituloNormalizado;
         this.descripcion = descripcionNormalizado;
         this.autor = autor.trim(); // antes era obj Usuario ahora con los ej quedó como string
@@ -31,7 +32,6 @@ export default class Publicacion {
         this.fechaPublicacion = new Date();
         this.activa = true;
         this.destacado = false;
-        this.id = id;
         this.etiquetas = [];
         this.reportes = [];
         this.estado = "pendiente";
