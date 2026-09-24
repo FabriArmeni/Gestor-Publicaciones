@@ -2,29 +2,24 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
-
-const app = express();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/src", express.static(path.join(__dirname, "src")));
+import Publicacion from "./src/Publicacion.js";
 
 const publicaciones = [
     {
         titulo: "Vendo apuntes",
-        descripcion: "apuntes de mate",
+        descripcion: "apuntes de mateeeeeeeeee",
         autor: { nombre: "martin", email: "mar@tin.com" },
         precio: 2000,
     },
     {
         titulo: "Vendo libro",
-        descripcion: "libro de anatomia",
+        descripcion: "libro de anatomiaaaaaaaaaaa",
         autor: { nombre: "fabricio", email: "fabri@cio.com" },
         precio: 2000,
     },
     {
         titulo: "Clase consulta",
-        descripcion: "antes del examen",
+        descripcion: "antes del examennnnnnnnnnnn",
         autor: { nombre: "santiago", email: "santi@alejo.com" },
         modalidad: "presencial",
         duracionMinutos: 120,
@@ -32,7 +27,7 @@ const publicaciones = [
     },
     {
         titulo: "Dibujo caratula",
-        descripcion: "para cada materia",
+        descripcion: "para cada materiaaaaaaaaaaaa",
         autor: { nombre: "juan", email: "juan@juan.com" },
         modalidad: "presencial",
         duracionMinutos: 120,
@@ -47,6 +42,26 @@ function esperar(ms) {
 }
 
 const repositorio = new RepositorioPublicaciones()
+
+const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Middlewares
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/src", express.static(path.join(__dirname, "src")));
+
+// Rutas
+app.post("/publicaciones", (req, res) => {
+    try {
+        const {titulo, descripcion, autor, categoria} = req.body
+        const publicacion = new Publicacion(titulo, descripcion, autor, categoria)
+        repositorio.agregar(publicacion)
+        res.status(201).send(publicacion.mostrarResumen())
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
 
 app.get("/estado-comunidad", async (req, res) => {
     await esperar(900) // para simular delay y que se vea el "Consultando...""

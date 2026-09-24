@@ -8,20 +8,20 @@ describe("Publicacion.revisar", () => {
                 throw new Error("Servicio no disponible");
             },
         };
-        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         await expect(publicacion.revisar(servicio)).rejects.toThrow("Servicio no disponible");
         expect(publicacion.estado).toBe("pendiente");
     });
     test("aprueba la publicación cuando el servicio resuelve aprobado", async () => {
         const servicio = { evaluar: async () => "aprobado" };
-        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         await expect(publicacion.revisar(servicio)).resolves.toBe("aprobada");
         expect(publicacion.estado).toBe("aprobada");
     });
     
     test("rechaza la publicación cuando el servicio resuelve rechazado", async () => {
         const servicio = { evaluar: async () => "rechazado" };
-        const publicacion = new Publicacion("Ana", "Apuntes de Redes", "...");
+        const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         await expect(publicacion.revisar(servicio)).resolves.toBe("rechazada");
     });
 
