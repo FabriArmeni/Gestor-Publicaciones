@@ -47,9 +47,9 @@ const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Middlewares
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/src", express.static(path.join(__dirname, "src")));
-app.use(express.urlencoded({extended: false}))
 
 // Rutas
 app.post("/publicaciones", (req, res) => {

@@ -20,6 +20,9 @@ const errorTitulo = document.getElementById("errorTitulo");
 const errorAutor = document.getElementById("errorAutor");
 const enviar = document.getElementById("enviar");
 
+const form2 = document.getElementById("pedido")
+const salida = document.getElementById("salida")
+
 const repositorio = new RepositorioPublicaciones();
 
 function actualizarVistaPrevia() {
@@ -271,3 +274,17 @@ document.querySelector("#consultarInactivas").addEventListener("click", async ()
         estado.textContent = `No se pudo consultar el estado: ${error.message}`;
     }
 });
+
+form2.addEventListener("submit", async (e) => {
+    e.preventDefault()
+    
+    const respuesta = await fetch(form2.action, {
+    method: form2.method,
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(new FormData(form2))
+  });
+
+    salida.textContent = await respuesta.text()
+    salida.dataset.tipo = respuesta.ok ? "exito" : "error"
+    if (respuesta.ok) form2.reset()
+})
