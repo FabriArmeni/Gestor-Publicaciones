@@ -2,12 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
-
-const app = express();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/src", express.static(path.join(__dirname, "src")));
+import Publicacion from "./src/Publicacion.js";
 
 const publicaciones = [
     {
@@ -47,6 +42,26 @@ function esperar(ms) {
 }
 
 const repositorio = new RepositorioPublicaciones()
+
+const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Middlewares
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/src", express.static(path.join(__dirname, "src")));
+app.use(express.urlencoded({extended: false}))
+
+// Rutas
+app.post("/publicaciones", (req, res) => {
+    try {
+        const {titulo, descripcion, autor, categoria} = req.body
+        const publicacion = new Publicacion(titulo, descripcion, autor, categoria)
+        repositorio.agregar(publicacion)
+        res.status(201).send(publicacion.mostrarResumen())
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
 
 app.get("/estado-comunidad", async (req, res) => {
     await esperar(900) // para simular delay y que se vea el "Consultando...""
