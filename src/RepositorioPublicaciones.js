@@ -44,15 +44,22 @@ class RepositorioPublicaciones {
         // y dejá la decisión documentada en un comentario.
 
         // Los perderia pero queremos mantenerlos, la idea es actualizar solo datos nuevos.
-        actualizada.fechaPublicacion = anterior.fechaPublicacion
-        actualizada.activa = anterior.activa
-        actualizada.destacado = anterior.destacado
-        actualizada.etiquetas = anterior.etiquetas
-        actualizada.reportes = anterior.reportes
-        actualizada.estado = anterior.estado
+        actualizada.fechaPublicacion = anterior.fechaPublicacion;
+        actualizada.activa = anterior.activa;
+        actualizada.destacado = anterior.destacado;
+        actualizada.etiquetas = anterior.etiquetas;
+        actualizada.reportes = anterior.reportes;
+        actualizada.estado = anterior.estado;
 
         this.publicaciones[this.publicaciones.indexOf(anterior)] = actualizada;
         return actualizada;
+    }
+
+    eliminar(id) {
+        const publicacion = this.buscarPorId(id);
+        if (!publicacion) return false;
+        this.publicaciones.splice(this.publicaciones.indexOf(publicacion), 1);
+        return true;
     }
 
     buscarPorUsuario(nombre) {
@@ -143,10 +150,11 @@ class RepositorioPublicaciones {
 
 export default RepositorioPublicaciones;
 
-
-// Verificacion 
-// const repo = new RepositorioPublicaciones()
+// Verificacion
+const repo = new RepositorioPublicaciones()
 // repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso").agregarEtiqueta("venta")
-// console.log(repo.listar());
+repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso")
+console.log(repo.listar());
+repo.eliminar(1)
 // repo.actualizar(1, { titulo: "comprooooooooo" })
-// console.log(repo.listar());
+console.log(repo.listar());
