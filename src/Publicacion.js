@@ -3,9 +3,9 @@ import Reporte from "./Reporte.js";
 export const CATEGORIAS_PERMITIDAS = ["general", "aviso", "evento", "compraventa"];
 
 export default class Publicacion {
-    static contador = 1;
+    // static contador = 1;
 
-    constructor(titulo, descripcion, autor, categoria = "general") {
+    constructor(id, titulo, descripcion, autor, categoria = "general") {
         if(!autor?.trim()) {
             throw new Error("El autor es obligatorio")
         }
@@ -31,7 +31,7 @@ export default class Publicacion {
         this.fechaPublicacion = new Date();
         this.activa = true;
         this.destacado = false;
-        this.id = Publicacion.contador++;
+        this.id = id;
         this.etiquetas = [];
         this.reportes = [];
         this.estado = "pendiente";

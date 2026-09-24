@@ -1,8 +1,8 @@
 import Publicacion from "./Publicacion.js";
 
 class PublicacionServicio extends Publicacion {
-    constructor(titulo,descripcion, autor, modalidad, duracionMinutos, cliente) {
-        super(titulo, descripcion, autor)
+    constructor(id, titulo,descripcion, autor, modalidad, duracionMinutos, cliente) {
+        super(id, titulo, descripcion, autor)
         this.modalidad = modalidad // "presencial" o "virtual"
         this.duracionMinutos = duracionMinutos // number
         this.cliente = cliente // obj Usuario
