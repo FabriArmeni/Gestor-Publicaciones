@@ -6,7 +6,7 @@ export default class Publicacion {
     static contador = 1;
 
     constructor(titulo, descripcion, autor, categoria = "general") {
-        if(!autor?.nombre.trim()) {
+        if(!autor?.trim()) {
             throw new Error("El autor es obligatorio")
         }
 
@@ -26,7 +26,7 @@ export default class Publicacion {
 
         this.titulo = tituloNormalizado;
         this.descripcion = descripcionNormalizado;
-        this.autor = autor.nombre.trim(); // objeto Usuario
+        this.autor = autor.trim(); // antes era obj Usuario ahora con los ej quedó como string
         this.categoria = categoria
         this.fechaPublicacion = new Date();
         this.activa = true;
