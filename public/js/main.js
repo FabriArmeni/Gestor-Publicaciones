@@ -90,6 +90,9 @@ function crearPublicacionDesdeFormulario() {
 
 function crearTarjeta(publicacion) {
     const tarjeta = document.createElement("article");
+    if (publicacion.destacado) {
+        tarjeta.classList.add("destacado")
+    }
     const resumen = document.createElement("p");
     const estado = document.createElement("p");
     const boton = document.createElement("button");

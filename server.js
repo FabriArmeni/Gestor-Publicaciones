@@ -7,19 +7,19 @@ import Publicacion from "./src/Publicacion.js";
 const publicaciones = [
     {
         titulo: "Vendo apuntes",
-        descripcion: "apuntes de mate",
+        descripcion: "apuntes de mateeeeeeeeee",
         autor: { nombre: "martin", email: "mar@tin.com" },
         precio: 2000,
     },
     {
         titulo: "Vendo libro",
-        descripcion: "libro de anatomia",
+        descripcion: "libro de anatomiaaaaaaaaaaa",
         autor: { nombre: "fabricio", email: "fabri@cio.com" },
         precio: 2000,
     },
     {
         titulo: "Clase consulta",
-        descripcion: "antes del examen",
+        descripcion: "antes del examennnnnnnnnnnn",
         autor: { nombre: "santiago", email: "santi@alejo.com" },
         modalidad: "presencial",
         duracionMinutos: 120,
@@ -27,7 +27,7 @@ const publicaciones = [
     },
     {
         titulo: "Dibujo caratula",
-        descripcion: "para cada materia",
+        descripcion: "para cada materiaaaaaaaaaaaa",
         autor: { nombre: "juan", email: "juan@juan.com" },
         modalidad: "presencial",
         duracionMinutos: 120,

@@ -6,7 +6,7 @@ export default class Publicacion {
     static contador = 1;
 
     constructor(titulo, descripcion, autor, categoria = "general") {
-        if(!autor?.trim()) {
+        if(!autor?.nombre.trim()) {
             throw new Error("El autor es obligatorio")
         }
 
@@ -26,7 +26,7 @@ export default class Publicacion {
 
         this.titulo = tituloNormalizado;
         this.descripcion = descripcionNormalizado;
-        this.autor = autor.trim(); // objeto Usuario
+        this.autor = autor.nombre.trim(); // objeto Usuario
         this.categoria = categoria
         this.fechaPublicacion = new Date();
         this.activa = true;
