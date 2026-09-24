@@ -6,11 +6,27 @@ import Usuario from "./Usuario.js";
 class RepositorioPublicaciones {
     constructor() {
         this.publicaciones = []; //arreglo de objetos Publicacion
+        this.proximoId = 1;
     }
 
-    agregar(publicacion) {
-        //publicacion: objeto Publicacion
+    agregar(titulo, contenido, autor, categoria) {
+        const publicacion = new Publicacion(
+            this.proximoId++,
+            titulo,
+            contenido,
+            autor,
+            categoria,
+        );
         this.publicaciones.push(publicacion);
+        return publicacion;
+    }
+
+    listar() {
+        return [...this.publicaciones];
+    }
+
+    buscarPorId(id) {
+        return this.publicaciones.find(p => p.id === Number(id))
     }
 
     buscarPorUsuario(nombre) {
@@ -100,3 +116,11 @@ class RepositorioPublicaciones {
 }
 
 export default RepositorioPublicaciones;
+
+// Verificacion agregar, listar y buscarporid
+// const repo = new RepositorioPublicaciones()
+// repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso")
+// repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso")
+// console.log(repo.listar());
+// console.log(repo.buscarPorId("2"));
+
