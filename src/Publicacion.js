@@ -38,7 +38,7 @@ export default class Publicacion {
     }
 
     mostrarResumen() {
-        return `Titulo: "${this.titulo}" por ${this.autor.nombre}`;
+        return `Titulo: "${this.titulo}" por ${this.autor.nombre || this.autor}`; // agregue el OR porque antes era un obj Usuario con .naombre y ahora es un string en el ejercicio
     }
 
     estaActiva() {
