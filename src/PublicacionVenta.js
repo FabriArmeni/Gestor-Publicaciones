@@ -2,7 +2,7 @@ import Publicacion from "./Publicacion.js";
 
 class PublicacionVenta extends Publicacion {
     constructor(titulo,descripcion, autor, precio) {
-        super(titulo, descripcion, autor)
+        super(id, titulo, descripcion, autor)
         this.precio = precio
         this.stock = 1
     }

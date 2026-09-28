@@ -5,7 +5,7 @@ export const CATEGORIAS_PERMITIDAS = ["general", "aviso", "evento", "compraventa
 export default class Publicacion {
     static contador = 1;
 
-    constructor(titulo, descripcion, autor, categoria = "general") {
+    constructor(id, titulo, descripcion, autor, categoria = "general") {
         if(!autor?.trim()) {
             throw new Error("El autor es obligatorio")
         }
@@ -35,6 +35,7 @@ export default class Publicacion {
         this.etiquetas = [];
         this.reportes = [];
         this.estado = "pendiente";
+        this.id = id;
     }
 
     mostrarResumen() {
