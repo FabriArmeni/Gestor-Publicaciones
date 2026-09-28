@@ -168,24 +168,22 @@ function manejarAccion(evento) {
     renderizarPublicaciones();
 }
 
-async function cargarPublicaciones(forzarError = false) {
-    estado.textContent = "Cargando publicaciones...";
+async function cargarPublicaciones() {
+    estado.textContent = "Cargando publicaciones... ";
     botonActualizar.disabled = true;
+
     try {
-        const url = forzarError
-            ? "/api/publicaciones?error=1"
-            : "/api/publicaciones";
-        const respuesta = await fetch(url);
+        const respuesta = await fetch("/publicaciones");
         if (!respuesta.ok) {
-            throw new Error("La respuesta no fue exitosa");
+            throw new Error("No se pudieron obtener las publicaciones del servidor");
         }
+
         const datos = await respuesta.json();
-        repositorio.cargarDesde(datos);
-        renderizarPublicaciones();
-        estado.textContent = `${datos.length} publicaciones recibidas`;
-    } catch (error) {
+        renderizarPublicaciones(datos);
+        estado.textContent = `${datos.length} publicaciones cargadas`;
+    }   catch (error) {
         estado.textContent = `Error: ${error.message}`;
-    } finally {
+    }   finally {
         botonActualizar.disabled = false;
     }
 }
@@ -289,5 +287,8 @@ form2.addEventListener("submit", async (e) => {
 
     salida.textContent = await respuesta.text()
     salida.dataset.tipo = respuesta.ok ? "exito" : "error"
-    if (respuesta.ok) form2.reset()
+    if (respuesta.ok) {
+        form2.reset();
+        await cargarPublicaciones();
+    }
 })
