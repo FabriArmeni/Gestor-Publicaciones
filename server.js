@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
 import Publicacion from "./src/Publicacion.js";
+import crearRouterPublicaciones from "./routes/publicaciones.routes.js";
 
 const publicaciones = [
     {
@@ -52,16 +53,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/src", express.static(path.join(__dirname, "src")));
 
 // Rutas
-app.post("/publicaciones", (req, res) => {
-    try {
-        const {titulo, descripcion, autor, categoria} = req.body
-        const publicacion = new Publicacion(titulo, descripcion, autor, categoria)
-        repositorio.agregar(publicacion)
-        res.status(201).send(publicacion.mostrarResumen())
-    } catch (error) {
-        res.status(400).send(error.message)
-    }
-})
+
+// PASO 5C: montar el router, pasándole la MISMA instancia de repositorio
+// que ya usan /estado-comunidad y /estado-inactivas
+app.use("/publicaciones", crearRouterPublicaciones(repositorio));
 
 app.get("/estado-comunidad", async (req, res) => {
     await esperar(900) // para simular delay y que se vea el "Consultando...""
@@ -73,14 +68,14 @@ app.get("/estado-inactivas", async(req,res) => {
     res.send(repositorio.obtenerEstadoInactivas())
 })
 
-app.get("/api/publicaciones", async (req, res) => {
-    await esperar(900);
-    if (req.query.error === "1")
-        return res
-            .status(500)
-            .json({ mensaje: "No pudimos consultar las publicaciones" });
-    res.json(publicaciones);
-});
+// app.get("/api/publicaciones", async (req, res) => {
+//     await esperar(900);
+//     if (req.query.error === "1")
+//         return res
+//             .status(500)
+//             .json({ mensaje: "No pudimos consultar las publicaciones" });
+//     res.json(publicaciones);
+// });
 
 app.listen(3000, () =>
     console.log("Repositorio publicaciones en http://localhost:3000"),

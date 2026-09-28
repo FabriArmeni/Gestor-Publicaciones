@@ -3,7 +3,6 @@ import Reporte from "./Reporte.js";
 export const CATEGORIAS_PERMITIDAS = ["general", "aviso", "evento", "compraventa"];
 
 export default class Publicacion {
-    // static contador = 1;
 
     constructor(id, titulo, descripcion, autor, categoria = "general") {
         if(!autor?.trim()) {

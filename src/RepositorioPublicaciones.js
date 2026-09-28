@@ -9,11 +9,11 @@ class RepositorioPublicaciones {
         this.proximoId = 1;
     }
 
-    agregar(titulo, contenido, autor, categoria) {
+    agregar(titulo, descripcion, autor, categoria) {
         const publicacion = new Publicacion(
             this.proximoId++,
             titulo,
-            contenido,
+            descripcion,
             autor,
             categoria,
         );
@@ -149,12 +149,3 @@ class RepositorioPublicaciones {
 }
 
 export default RepositorioPublicaciones;
-
-// Verificacion
-const repo = new RepositorioPublicaciones()
-// repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso").agregarEtiqueta("venta")
-repo.agregar("vendoooo", "descripcion de mas de 20 caracteres", "juan", "aviso")
-console.log(repo.listar());
-repo.eliminar(1)
-// repo.actualizar(1, { titulo: "comprooooooooo" })
-console.log(repo.listar());
