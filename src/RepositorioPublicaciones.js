@@ -2,18 +2,45 @@ import Publicacion from "./Publicacion.js";
 import PublicacionServicio from "./PublicacionServicio.js";
 import PublicacionVenta from "./PublicacionVenta.js";
 import Usuario from "./Usuario.js";
+import { readFile, writeFile } from "node:fs/promises";
 
-class RepositorioPublicaciones {
-    constructor() {
+
+export default class RepositorioPublicaciones {
+    constructor(ruta) {
+        this.ruta = ruta;
         this.publicaciones = []; //arreglo de objetos Publicacion
+        this.proximoId = 1;
     }
 
-    agregar(autor, titulo, descripcion, categoria) {
+    async cargar() {
+        try {
+            const contenido = await readFile(this.ruta, "utf8");
+            const datos = JSON.parse(contenido);
+
+            this.publicaciones = datos.map(p => new Publicacion(p.id, p.autor, p.titulo, p.descripcion, p.categoria));
+
+            const maxId = this.publicaciones.reduce((max, p) => (p.id > max ? p.id : max), 0);
+            this.proximoId = maxId + 1;
+        } catch (error) {
+            if (error.code === "ENOENT") {
+                await this.guardar();
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    async guardar() {
+        await writeFile(this.ruta, JSON.stringify(this.publicaciones, null, 2), "utf8");
+    }
+
+    async agregar(autor, titulo, descripcion, categoria = "general") {
         const nuevaPublicacion = new Publicacion(
             this.proximoId, autor, titulo, descripcion, categoria);
 
         this.publicaciones.push(nuevaPublicacion);
         this.proximoId++;
+        await this.guardar();
 
         return nuevaPublicacion;
     }
@@ -23,40 +50,32 @@ class RepositorioPublicaciones {
     }
 
     buscarPorId(id) {
-        const idNumerico = Number(id);
-        return this.publicaciones.find((pub) => pub.id === idNumerico) || null;
+        return this.publicaciones.find(p => String(p.id) === String(id)) || null;
     }
 
-    actualizar(id, cambios = {}) {
-        const anterior = this.buscarPorId(id);
-        if (!anterior) {
-            throw new Error("Publicacion inexistente");
-        }
-        const actualizada = new Publicacion(
-            anterior.id, 
-            cambios.autor ?? anterior.autor,
-            cambios.titulo ?? anterior.titulo,
-            cambios.descripcion ?? anterior.descripcion,
-            cambios.categoria ?? anterior.categoria
-        );
-        if (anterior.reportes !== undefined) actualizada.reportes = anterior.reportes;
-        if (anterior.activa !== undefined) actualizada.activa = anterior.activa;
-        if (anterior.etiquetas !== undefined) actualizada.etiquetas = anterior.etiquetas;
+    async actualizar(id, cambios) {
+        const pub = this.buscarPorId(id);
+        if (!pub) return null;
 
-        const indice = this.publicaciones.indexOf(anterior);
-        this.publicaciones[indice] = actualizada;
+        const autor = cambios.autor ?? pub.autor;
+        const titulo = cambios.titulo ?? pub.titulo;
+        const descripcion = cambios.descripcion ?? pub.descripcion;
+        const categoria = cambios.categoria ?? pub.categoria;
 
+        const actualizada = new Publicacion(pub.id, autor, titulo, descripcion, categoria);
+        const index = this.publicaciones.findIndex(p => String(p.id) === String(id));
+        this.publicaciones[index] = actualizada;
+
+        await this.guardar();
         return actualizada;
     }
 
-    eliminar(id) {
-        const publicacion = this.buscarPorId(id);
-        if (!publicacion) {
-            return false;
-        }
+    async eliminar(id) {
+        const index = this.publicaciones.findIndex(p => String(p.id) === String(id));
+        if (index === -1) return false;
 
-        const indice = this.publicaciones.indexOf(publicacion);
         this.publicaciones.splice(indice, 1);
+        await this.guardar();
         return true;
     }
 
@@ -145,5 +164,3 @@ class RepositorioPublicaciones {
         return `Publicaciones inactivas: ${inactivas}`;
     }
 }
-
-export default RepositorioPublicaciones;
