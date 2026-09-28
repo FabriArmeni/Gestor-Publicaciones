@@ -2,19 +2,16 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
-import Publicacion from "./src/Publicacion.js";
 import crearRouterPublicaciones from "./routes/publicaciones.routes.js";
+import { paraExponer, convertirAXML } from "./src/formatos.js"
 
-function esperar(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
+const __dirname = path.dirname(fileURLtoPath(import.meta.url));
+const RUTA_DATOS = path.join(__dirname, "data", "publicaciones.json");
 
-const repositorio = new RepositorioPublicaciones();
+const repositorio = new RepositorioPublicaciones(RUTA_DATOS);
+await repositorio.cargar();
 
 const app = express();
-const __dirname = path.dirname(fileURLtoPath(import.meta.url));
 
 //Middlewares
 app.use(express.json()); //NECESARIO: Procesa JSON en los POST/PUT
@@ -24,16 +21,17 @@ app.use("/src", express.static(path.join(__dirname, "src")));
 
 app.use("/publicaciones", crearRouterPublicaciones(repositorio));
 
-app.get("/estado-comunidad", async (req, res) => {
-    await esperar(900);
-    res.send(repositorio.obtenerEstado());
+//Endpoints
+app.get("/datos/publicaciones.json", (req, res) => {
+    const publicas = repositorio.listar().map(paraExponer);
+    res.json(publicas);
 });
 
-app.get("/estado-inactivas", async (req, res) => {
-    await esperar(900);
-    res.send(repositorio.obtenerEstadoInactivas());
+app.get("/datos/publicaciones.xml", (req, res) => {
+    const xmlText = convertirAXML(repositorio.listar());
+    res.type("application/xml").send(xmlText);
 });
 
 app.listen(3000, () => {
-    console.log("Servidor corriendo en http://localhost:3000")
+    console.log("Servidor en http://localhost:3000")
 });
