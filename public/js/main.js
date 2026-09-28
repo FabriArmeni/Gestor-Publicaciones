@@ -292,3 +292,34 @@ form2.addEventListener("submit", async (e) => {
         await cargarPublicaciones();
     }
 })
+
+//Diagnostico JSON
+const btnJson = document.querySelector("#ver-json");
+if (btnJson) {
+    btnJson.addEventListener("click", async () => {
+        const texto = await fetch("/datos/publicaciones.json").then(r => r.text());
+        const lista = JSON.parse(texto);
+        mostrarDiagnostico(lista);
+    });
+}
+
+//Diagnostico XML
+const btnXml = document.querySelector("#ver-xml");
+if (btnXml) {
+    btnXml.addEventListener("click", async () => {
+        const texto = await fetch("/datos/publicaciones.xml").then(r => r.text());
+        const xmlDoc = new DOMParser().parseFromString(texto, "application/xml");
+        const nodos = xmlDoc.querySelectorAll("publicacion");
+
+        const lista = Array.from(nodos).map(nodo => ({
+            id: nodo.getAttribute("id"),
+            autor: nodo.querySelector("autor")?.textContent ?? "",
+            titulo: nodo.querySelector("titulo")?.textContent ?? "",
+            descripcion: nodo.querySelector("descripcino")?.textContent ?? "",
+            categori: nodo.querySelector("categoria")?.textContent ?? ""
+
+        }));
+
+        mostrarDiagnostico(lista);
+    })
+}
