@@ -8,9 +8,23 @@ class RepositorioPublicaciones {
         this.publicaciones = []; //arreglo de objetos Publicacion
     }
 
-    agregar(publicacion) {
-        //publicacion: objeto Publicacion
-        this.publicaciones.push(publicacion);
+    agregar(autor, titulo, descripcion, categoria) {
+        const nuevaPublicacion = new Publicacion(
+            this.proximoId, autor, titulo, descripcion, categoria);
+
+        this.publicaciones.push(nuevaPublicacion);
+        this.proximoId++;
+
+        return nuevaPublicacion;
+    }
+
+    listar() {
+        return [... this.publicaciones];
+    }
+
+    buscarPorId(id) {
+        const idNumerico = Number(id);
+        return this.publicaciones.find((pub) => pub.id === idNumerico) || null;
     }
 
     buscarPorUsuario(nombre) {
