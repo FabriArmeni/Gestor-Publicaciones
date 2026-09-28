@@ -27,6 +27,39 @@ class RepositorioPublicaciones {
         return this.publicaciones.find((pub) => pub.id === idNumerico) || null;
     }
 
+    actualizar(id, cambios = {}) {
+        const anterior = this.buscarPorId(id);
+        if (!anterior) {
+            throw new Error("Publicacion inexistente");
+        }
+        const actualizada = new Publicacion(
+            anterior.id, 
+            cambios.autor ?? anterior.autor,
+            cambios.titulo ?? anterior.titulo,
+            cambios.descripcion ?? anterior.descripcion,
+            cambios.categoria ?? anterior.categoria
+        );
+        if (anterior.reportes !== undefined) actualizada.reportes = anterior.reportes;
+        if (anterior.activa !== undefined) actualizada.activa = anterior.activa;
+        if (anterior.etiquetas !== undefined) actualizada.etiquetas = anterior.etiquetas;
+
+        const indice = this.publicaciones.indexOf(anterior);
+        this.publicaciones[indice] = actualizada;
+
+        return actualizada;
+    }
+
+    eliminar(id) {
+        const publicacion = this.buscarPorId(id);
+        if (!publicacion) {
+            return false;
+        }
+
+        const indice = this.publicaciones.indexOf(publicacion);
+        this.publicaciones.splice(indice, 1);
+        return true;
+    }
+
     buscarPorUsuario(nombre) {
         return this.publicaciones.filter((p) => p.autor.nombre === nombre);
     }
