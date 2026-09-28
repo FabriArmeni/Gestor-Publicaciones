@@ -10,3 +10,11 @@ export function paraExponer(publicacion) {
         estado: publicacion.estado ?? "publicado"
     };
 }
+
+export function convertirAJSON(publicaciones) {
+    return JSON.stringify(publicaciones.map(paraExponer));
+}
+
+export function convertirDesdeJSON(texto) {
+    return JSON.parse(texto);
+}
