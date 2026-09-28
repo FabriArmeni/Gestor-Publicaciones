@@ -18,3 +18,28 @@ export function convertirAJSON(publicaciones) {
 export function convertirDesdeJSON(texto) {
     return JSON.parse(texto);
 }
+
+function escaparXML(valor) {
+    if (valor === null || valor === undefined) return "";
+    return String(valor)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&apos;");
+}
+
+function publicacionAXML(publicacion) {
+    const exp = paraExponer(publicacion);
+    return` <publicacion id="${escaparXML(exp.id)}">
+    <autor>${escaparXML(exp.autor)}</autor>
+    <titulo>${escaparXML(exp.titulo)}</titulo>
+    <descripcion>${escaparXML(exp.descripcion)}</descripcion>
+    <categoria>${escaparXML(exp.categoria)}</categoria>
+    </publicacion>`;
+}
+
+export function convertirAXML(publicaciones) {
+    const itemsXML = publicaciones.map(publicacionAXML).join("\n");
+    return `<?xml version="1.0" encoding="UTF-8"?>\n<publicaciones>\n${itemsXML}\n</publicaciones>`;
+}
