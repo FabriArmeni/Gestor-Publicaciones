@@ -244,15 +244,3 @@ GET /api/libros/?q=metamorfosis
 502 Bad Gateway
 
 { "error": "No fue posible consultar el servicio de libros"}
-
-# Lista de comprobación
-
-☐ La URL representa un recurso y utiliza sustantivos.
-
-☐ El método HTTP expresa la operación.
-
-☐ Las entradas indican tipo y obligatoriedad.
-
-☐ Cada resultado tiene un código de estado.
-
-☐ Los ejemplos coinciden con el contrato.
