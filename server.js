@@ -76,8 +76,13 @@ if (repositorio.listar().length === 0) {
 
 // Middlewares
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/src", express.static(path.join(__dirname, "src")));
+
+// Routers
+app.use("/api/publicaciones", crearRouterPublicaciones(repositorio));
+app.use("/api/libros", crearRouterLibros(servicioLibros));
 
 // Rutas
 app.get("/datos/publicaciones.json", (req, res) => {
@@ -94,7 +99,6 @@ app.get("/datos/publicaciones.xml", (req, res) => {
 
 // PASO 5C: montar el router, pasándole la MISMA instancia de repositorio
 // que ya usan /estado-comunidad y /estado-inactivas
-app.use("/publicaciones", crearRouterPublicaciones(repositorio));
 
 app.get("/estado-comunidad", async (req, res) => {
     await esperar(900); // para simular delay y que se vea el "Consultando...""

@@ -195,6 +195,29 @@ class RepositorioPublicaciones {
         const inactivas = this.publicaciones.filter((p) => !p.activa).length;
         return `Publicaciones inactivas: ${inactivas}`;
     }
+
+    filtrar({ autor, categoria, etiqueta }) {
+        let filtrado = [...this.publicaciones].filter(pub => {
+            let coincide = true
+            if(autor && pub.autor !== autor) {
+                coincide = false
+            }
+            if(categoria && pub.categoria !== categoria) {
+                coincide = false                
+            }
+            if(etiqueta) {
+                // tieneEtiqueta()
+                if(pub.autor !== autor){
+                    coincide = false
+                }
+            }
+                
+
+            if (coincide) {
+                return pub
+            }
+        })
+    }
 }
 
 export default RepositorioPublicaciones;
