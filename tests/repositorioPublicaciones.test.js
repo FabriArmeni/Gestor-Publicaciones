@@ -8,9 +8,9 @@ describe("RepositorioPublicaciones · CRUD y Persistencia", () => {
   let repositorio;
   let rutaArchivo;
 
-  const autorValido = "Martin";
   const tituloValido = "Titulo de Prueba";
   const descripcionValida = "Esta es una descripcion lo suficientemente larga que supera los 20 caracteres";
+  const autorValido = "Martin";
   const categoriaValida = "general";
 
   beforeEach(async () => {
@@ -23,15 +23,15 @@ describe("RepositorioPublicaciones · CRUD y Persistencia", () => {
   });
 
   test("PASO 6A: agregar asigna ids crecientes a partir de 1", async () => {
-    const pub1 = await repositorio.agregar(autorValido, tituloValido, descripcionValida, categoriaValida);
-    const pub2 = await repositorio.agregar(autorValido, tituloValido, descripcionValida, categoriaValida);
+    const pub1 = await repositorio.agregar(tituloValido, descripcionValida,  autorValido, categoriaValida);
+    const pub2 = await repositorio.agregar(tituloValido, descripcionValida,  autorValido, categoriaValida);
 
     expect(pub1.id).toBe(1);
     expect(pub2.id).toBe(2);
   });
 
   test("PASO 6B: listar devuelve una copia: modificarla no afecta al repositorio", async () => {
-    await repositorio.agregar(autorValido, tituloValido, descripcionValida, categoriaValida);
+    await repositorio.agregar(tituloValido, descripcionValida, autorValido, categoriaValida);
     const copia = repositorio.listar();
 
     copia.pop();
@@ -41,7 +41,7 @@ describe("RepositorioPublicaciones · CRUD y Persistencia", () => {
   });
 
   test("PASO 6C: actualizar revalida datos y conserva el ID", async () => {
-    const pub = await repositorio.agregar(autorValido, "Titulo Viejo", descripcionValida, categoriaValida);
+    const pub = await repositorio.agregar("Titulo Viejo", descripcionValida, autorValido, categoriaValida);
     const actualizada = await repositorio.actualizar(pub.id, { titulo: "Nuevo Titulo" });
 
     expect(actualizada.id).toBe(pub.id);
@@ -55,7 +55,7 @@ describe("RepositorioPublicaciones · CRUD y Persistencia", () => {
   });
 
   test("buscarPorId funciona tanto con número como con string", async () => {
-    await repositorio.agregar(autorValido, tituloValido, descripcionValida, categoriaValida);
+    await repositorio.agregar(tituloValido, descripcionValida, autorValido, categoriaValida);
 
     expect(repositorio.buscarPorId(1)).not.toBeNull();
     expect(repositorio.buscarPorId("1")).not.toBeNull();

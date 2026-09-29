@@ -25,17 +25,29 @@ describe("RepositorioPublicaciones", () => {
     });
 
     // parte 7
-    test("cada subclase arma su propio resumen", () => {
-        const venta = new PublicacionVenta("Calculadora", "Contenido valido de mas de 20 caracteres", "Anabella", 5000);
-        const servicio = new PublicacionServicio(
-            "Clases de Álgebra",
-            "Contenido valido de mas de 20 caracteres",
-            "Luis",
-            "presencial",
-            120,
-            { nombre: "juan", email: "juan@gmail.com" },
-        );
-        expect(venta.mostrarResumen()).toContain("5000");
-        expect(servicio.mostrarResumen()).toContain("Clases de Álgebra");
-    });
+test("cada subclase arma su propio resumen", () => {
+    // Agregamos null en la posición del id
+    const venta = new PublicacionVenta(
+        null, 
+        "Calculadora", 
+        "Contenido valido de mas de 20 caracteres", 
+        "Anabella", 
+        "compraventa", 
+        5000
+    );
+
+    const servicio = new PublicacionServicio(
+        null,
+        "Clases de Álgebra",
+        "Contenido valido de mas de 20 caracteres",
+        "Luis",
+        "servicios",
+        "presencial",
+        120,
+        { nombre: "juan", email: "juan@gmail.com" }
+    );
+
+    expect(venta.resumen).toContain("5000");
+    expect(servicio.resumen).toContain("Clases de Álgebra");
+});
 });

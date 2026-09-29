@@ -1,17 +1,16 @@
 import Publicacion from "./Publicacion.js";
 
 class PublicacionServicio extends Publicacion {
-    constructor(titulo,descripcion, autor, modalidad, duracionMinutos, cliente) {
-        super(id, titulo, descripcion, autor)
+    constructor(id, titulo, descripcion, autor, categoria, modalidad, duracionMinutos, cliente) {
+        super(id, titulo, descripcion, autor, categoria)
+
         this.modalidad = modalidad // "presencial" o "virtual"
         this.duracionMinutos = duracionMinutos // number
         this.cliente = cliente // obj Usuario
     }
 
-    mostrarResumen(){
-        let base = super.mostrarResumen()
-        base += ` - Modalidad: ${this.modalidad} - Duracion: ${this.duracionMinutos} minutos`
-        return base
+    get resumen() {
+        return `${super.resumen} - Modalidad: ${this.modalidad} - Duracion: ${this.duracionMinutos} minutos`;
     }
 }
 

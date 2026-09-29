@@ -4,12 +4,35 @@ import PublicacionVenta from "./PublicacionVenta.js";
 import Usuario from "./Usuario.js";
 import { readFile, writeFile } from "node:fs/promises";
 
-
 export default class RepositorioPublicaciones {
     constructor(ruta) {
         this.ruta = ruta;
-        this.publicaciones = []; //arreglo de objetos Publicacion
+        this.publicaciones = [];
         this.proximoId = 1;
+    }
+
+    // Instancia el tipo correcto de publicación según sus propiedades
+    _instanciarPublicacion(dato) {
+        const autor = dato.autor instanceof Usuario 
+            ? dato.autor 
+            : new Usuario(dato.autor.nombre, dato.autor.email);
+
+        const id = dato.id ?? this.proximoId++;
+
+        if (dato.precio !== undefined) {
+            return new PublicacionVenta(
+                id, dato.titulo, dato.descripcion, autor, dato.categoria ?? "compraventa", dato.precio
+            );
+        } else if (dato.modalidad) {
+            const cliente = dato.cliente instanceof Usuario
+                ? dato.cliente
+                : new Usuario(dato.cliente.nombre, dato.cliente.email);
+            return new PublicacionServicio(
+                id, dato.titulo, dato.descripcion, autor, dato.categoria ?? "avisos", dato.modalidad, dato.duracionMinutos, cliente
+            );
+        } else {
+            return new Publicacion(id, dato.titulo, dato.descripcion, autor, dato.categoria ?? "general");
+        }
     }
 
     async cargar() {
@@ -17,7 +40,7 @@ export default class RepositorioPublicaciones {
             const contenido = await readFile(this.ruta, "utf8");
             const datos = JSON.parse(contenido);
 
-            this.publicaciones = datos.map(p => new Publicacion(p.id, p.autor, p.titulo, p.descripcion, p.categoria));
+            this.publicaciones = datos.map(p => this._instanciarPublicacion(p));
 
             const maxId = this.publicaciones.reduce((max, p) => (p.id > max ? p.id : max), 0);
             this.proximoId = maxId + 1;
@@ -34,19 +57,32 @@ export default class RepositorioPublicaciones {
         await writeFile(this.ruta, JSON.stringify(this.publicaciones, null, 2), "utf8");
     }
 
-    async agregar(autor, titulo, descripcion, categoria = "general") {
-        const nuevaPublicacion = new Publicacion(
-            this.proximoId, autor, titulo, descripcion, categoria);
+    async agregar(publicacionONuevosDatos) {
+        let nuevaPublicacion;
+        
+        if (publicacionONuevosDatos instanceof Publicacion) {
+            nuevaPublicacion = publicacionONuevosDatos;
+            if (!nuevaPublicacion.id) {
+                nuevaPublicacion.id = this.proximoId++;
+            }
+        } else {
+            nuevaPublicacion = this._instanciarPublicacion(publicacionONuevosDatos);
+        }
 
         this.publicaciones.push(nuevaPublicacion);
-        this.proximoId++;
         await this.guardar();
-
         return nuevaPublicacion;
     }
 
+    cargarDesde(datos) {
+        datos.forEach((dato) => {
+            const publi = this._instanciarPublicacion(dato);
+            this.publicaciones.push(publi);
+        });
+    }
+
     listar() {
-        return [... this.publicaciones];
+        return [...this.publicaciones];
     }
 
     buscarPorId(id) {
@@ -57,17 +93,9 @@ export default class RepositorioPublicaciones {
         const pub = this.buscarPorId(id);
         if (!pub) return null;
 
-        const autor = cambios.autor ?? pub.autor;
-        const titulo = cambios.titulo ?? pub.titulo;
-        const descripcion = cambios.descripcion ?? pub.descripcion;
-        const categoria = cambios.categoria ?? pub.categoria;
-
-        const actualizada = new Publicacion(pub.id, autor, titulo, descripcion, categoria);
-        const index = this.publicaciones.findIndex(p => String(p.id) === String(id));
-        this.publicaciones[index] = actualizada;
-
+        Object.assign(pub, cambios);
         await this.guardar();
-        return actualizada;
+        return pub;
     }
 
     async eliminar(id) {
@@ -80,11 +108,14 @@ export default class RepositorioPublicaciones {
     }
 
     buscarPorUsuario(nombre) {
-        return this.publicaciones.filter((p) => p.autor.nombre === nombre);
+        return this.publicaciones.filter((p) => {
+            const nombreAutor = typeof p.autor === "object" ? p.autor.nombre : p.autor;
+            return nombreAutor === nombre;
+        });
     }
 
     filtrarActivas() {
-        return this.publicaciones.filter((p) => p.estaActiva());
+        return this.publicaciones.filter((p) => p.activa);
     }
 
     cantidadTotal() {
@@ -92,70 +123,31 @@ export default class RepositorioPublicaciones {
     }
 
     listarPorTipo(claseConstructor) {
-        return this.publicaciones.filter(
-            (publicacion) => publicacion instanceof claseConstructor,
-        );
-    }
-
-    listarResumenes() {
-        return this.publicaciones.map((p) => p.mostrarResumen());
+        return this.publicaciones.filter((p) => p instanceof claseConstructor);
     }
 
     filtrarPorTipo(claseConstructor) {
-        return this.publicaciones.filter(
-            (publicacion) => publicacion instanceof claseConstructor,
-        );
+        return this.listarPorTipo(claseConstructor);
     }
 
-    cargarDesde(datos) {
-        const publicaciones = datos.map((dato) => {
-            const autor = new Usuario(dato.autor.nombre, dato.autor.email);
-
-            if (dato.precio) {
-                return new PublicacionVenta(
-                    dato.titulo,
-                    dato.descripcion,
-                    autor,
-                    dato.precio,
-                );
-            } else if (dato.modalidad) {
-                const cliente = new Usuario(
-                    dato.cliente.nombre,
-                    dato.cliente.email,
-                );
-                return new PublicacionServicio(
-                    dato.titulo,
-                    dato.descripcion,
-                    autor,
-                    dato.modalidad,
-                    dato.duracionMinutos,
-                    cliente,
-                );
-            } else {
-                return new Publicacion(dato.titulo, dato.descripcion, autor);
-            }
-        });
-
-        publicaciones.forEach((publi) => {
-            this.publicaciones.push(publi);
-        });
+    listarResumenes() {
+        return this.publicaciones.map((p) => p.resumen);
     }
 
     buscarPorEtiqueta(etiqueta) {
         return this.publicaciones.filter(
-            (publicacion) =>
-                publicacion.activa && publicacion.tieneEtiqueta(etiqueta),
+            (p) => p.activa && typeof p.tieneEtiqueta === "function" && p.tieneEtiqueta(etiqueta)
         );
     }
 
     pendientesDeRevision() {
         return this.publicaciones.filter(
-            (p) => p.activa && p.requiereRevision(),
+            (p) => p.activa && typeof p.requiereRevision === "function" && p.requiereRevision()
         );
     }
 
     obtenerEstado() {
-        const activas = this.publicaciones.filter((p) => p.activa).length;
+        const activas = this.filtrarActivas().length;
         return `Publicaciones activas: ${activas}`;
     }
 

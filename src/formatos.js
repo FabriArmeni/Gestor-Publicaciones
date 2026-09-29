@@ -1,9 +1,9 @@
 export function paraExponer(publicacion) {
     return {
         id: publicacion.id,
-        autor: publicacion.autor,
         titulo: publicacion.titulo,
         descripcion: publicacion.descripcion,
+        autor: publicacion.autor,
         categoria: publicacion.categoria,
         activa: publicacion.activa ?? true,
         etiquetas: publicacion.etiquetas ?? [],
@@ -32,9 +32,9 @@ function escaparXML(valor) {
 function publicacionAXML(publicacion) {
     const exp = paraExponer(publicacion);
     return` <publicacion id="${escaparXML(exp.id)}">
-    <autor>${escaparXML(exp.autor)}</autor>
     <titulo>${escaparXML(exp.titulo)}</titulo>
     <descripcion>${escaparXML(exp.descripcion)}</descripcion>
+    <autor>${escaparXML(exp.autor)}</autor>
     <categoria>${escaparXML(exp.categoria)}</categoria>
     </publicacion>`;
 }
