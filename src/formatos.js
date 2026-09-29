@@ -9,3 +9,12 @@ export function paraExponer(publicacion) {
         estado: publicacion.estado,
     };
 }
+
+export function convertirAJSON(publicaciones) {
+ // PASO 2A: publicaciones.map(paraExponer) y JSON.stringify
+ return JSON.stringify(publicaciones.map(paraExponer))
+}
+export function convertirDesdeJSON(texto) {
+ // PASO 2B: JSON.parse
+ return JSON.parse(texto)
+}
