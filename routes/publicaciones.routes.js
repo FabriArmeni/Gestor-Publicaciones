@@ -9,8 +9,8 @@ export default function crearRouterPublicaciones(repositorio) {
 
     router.post("/", async (req,res) => {
         try {
-            const { autor, titulo, descripcion, categoria } = req.body;
-            const nueva = await repositorio.agregar(autor, titulo, descripcion, categoria);
+            const { titulo, descripcion, autor, categoria } = req.body;
+            const nueva = await repositorio.agregar(titulo, descripcion, autor, categoria);
             res.status(201).json(nueva);
         } catch (error) {
             res.status(400).json({ error: error.message });

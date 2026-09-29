@@ -74,7 +74,7 @@ export default class RepositorioPublicaciones {
         const index = this.publicaciones.findIndex(p => String(p.id) === String(id));
         if (index === -1) return false;
 
-        this.publicaciones.splice(indice, 1);
+        this.publicaciones.splice(index, 1);
         await this.guardar();
         return true;
     }

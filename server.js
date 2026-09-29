@@ -5,7 +5,7 @@ import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
 import crearRouterPublicaciones from "./routes/publicaciones.routes.js";
 import { paraExponer, convertirAXML } from "./src/formatos.js"
 
-const __dirname = path.dirname(fileURLtoPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RUTA_DATOS = path.join(__dirname, "data", "publicaciones.json");
 
 const repositorio = new RepositorioPublicaciones(RUTA_DATOS);
