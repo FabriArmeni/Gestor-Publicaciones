@@ -62,7 +62,7 @@ app.get("/datos/publicaciones.json", (req, res) => {
 app.get("/datos/publicaciones.xml", (req, res) => {
     // PASO 4B: res.type("application/xml").send(...)
     const publicaciones = repositorio.listar().map(paraExponer)
-    res.type("xml").send(convertirAXML(publicaciones))
+    res.type("application/xml").send(convertirAXML(publicaciones))
 });
 
 // PASO 5C: montar el router, pasándole la MISMA instancia de repositorio

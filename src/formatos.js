@@ -61,10 +61,5 @@ export function convertirAXML(publicaciones) {
     // PASO 3C: envolver todos los <publicacion> dentro de <publicaciones>
     // sin olvidar el encabezado <?xml version="1.0" encoding="UTF-8"?>
     const publicacionesAXML = publicaciones.map(publicacionAXML).join("");
-    return `
-    <?xml version="1.0" encoding="UTF-8"?>
-    <publicaciones>
-        ${publicacionesAXML}
-    </publicaciones>
-    `;
+    return `<?xml version="1.0" encoding="UTF-8"?><publicaciones>${publicacionesAXML}</publicaciones>`;
 }

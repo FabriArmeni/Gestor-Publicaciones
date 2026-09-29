@@ -11,7 +11,7 @@ formulario.addEventListener("submit", async (evento) => {
     });
     if (respuesta.ok) {
         // salida.textContent = await respuesta.text();
-        salida.textContent = "Publicación creada correctamente."
+        salida.textContent = "Publicación creada correctamente.";
         salida.dataset.tipo = respuesta.ok ? "exito" : "error";
         formulario.reset();
         await cargarPublicaciones(); // PASO 5E: refrescar el listado
@@ -21,28 +21,28 @@ formulario.addEventListener("submit", async (evento) => {
 async function cargarPublicaciones() {
     // PASO 5D: fetch("/publicaciones") → renderizar <li> por cada publicación
     try {
-        const respuesta = await fetch("/publicaciones")
-        if(!respuesta.ok) {
-            throw new Error("La respuesta no fue exitosa")
+        const respuesta = await fetch("/publicaciones");
+        if (!respuesta.ok) {
+            throw new Error("La respuesta no fue exitosa");
         }
-        const publicaciones = await respuesta.json()
-        renderizarPublicaciones(publicaciones)
+        const publicaciones = await respuesta.json();
+        renderizarPublicaciones(publicaciones);
     } catch (error) {
         salida.textContent = `Error al cargar publicaciones: ${error.message}`;
     }
 }
 
 function renderizarPublicaciones(publicaciones) {
-    lista.replaceChildren(...publicaciones.map(crearTarjeta))
+    lista.replaceChildren(...publicaciones.map(crearTarjeta));
 }
 
 function crearTarjeta(publicacion) {
     console.log(publicacion);
-    const {id, titulo, autor, descripcion, activa, categoria} = publicacion
-    
+    const { id, titulo, autor, descripcion, activa, categoria } = publicacion;
+
     const tarjeta = document.createElement("li");
     if (publicacion.destacado) {
-        tarjeta.classList.add("destacado")
+        tarjeta.classList.add("destacado");
     }
     const resumen = document.createElement("p");
     const estado = document.createElement("p");
@@ -78,20 +78,60 @@ async function manejarAccion(evento) {
 
     // if (accion === "baja") publicacion.darDeBaja();
     // if (accion === "destacar") publicacion.destacar();
-    
-    if (accion === "eliminar") {
 
+    if (accion === "eliminar") {
         try {
             const respuesta = fetch(`/publicaciones/${id}`, {
-                method: "delete"
-            })
+                method: "delete",
+            });
         } catch (error) {
             console.log(error);
-            
         }
-        
     }
-    cargarPublicaciones()
+    cargarPublicaciones();
 }
 
-lista.addEventListener("click", manejarAccion)
+lista.addEventListener("click", manejarAccion);
+
+function mostrarDiagnostico(publicaciones) {
+    // ya implementado: arma los <li> a partir de un arreglo de objetos simples
+    const listaDiagnostico = document.getElementById("lista-diagnostico")
+    listaDiagnostico.innerHTML = "";
+    publicaciones.forEach((pub) => {
+        const li = document.createElement("li");
+        li.textContent = `${pub.titulo} - ${pub.autor} (${pub.categoria}): ${pub.descripcion}.`;
+        listaDiagnostico.appendChild(li);
+    });
+}
+
+document.querySelector("#ver-json").addEventListener("click", async () => {
+    const texto = await fetch("/datos/publicaciones.json").then((r) =>
+        r.text(),
+    );
+    // PASO 5A: JSON.parse(texto) y mostrarDiagnostico(...)
+    document.querySelector("#texto").textContent = texto;
+    mostrarDiagnostico(JSON.parse(texto));
+});
+
+document.querySelector("#ver-xml").addEventListener("click", async () => {
+    const texto = await fetch("/datos/publicaciones.xml").then((r) => r.text());
+    // PASO 5B: new DOMParser().parseFromString(texto, "application/xml")
+    // luego xml.querySelectorAll("publicacion") y mapear cada nodo a un objeto
+    // simple, leyendo getAttribute("id") y querySelector("autor").textContent
+
+    document.querySelector("#texto").textContent = texto;
+
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(texto, "application/xml");
+
+    const publicaciones = [...xml.querySelectorAll("publicacion")].map((n) => ({
+        id: Number(n.getAttribute("id")),
+        titulo: n.querySelector("titulo").textContent,
+        descripcion: n.querySelector("descripcion").textContent,
+        autor: n.querySelector("autor").textContent,
+        categoria: n.querySelector("categoria").textContent,
+        etiquetas: n.querySelector("etiquetas").textContent,
+    }));
+
+    mostrarDiagnostico(publicaciones);
+});
