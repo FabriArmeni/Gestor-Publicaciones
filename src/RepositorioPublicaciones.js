@@ -2,6 +2,7 @@ import Publicacion from "./Publicacion.js";
 import PublicacionServicio from "./PublicacionServicio.js";
 import PublicacionVenta from "./PublicacionVenta.js";
 import Usuario from "./Usuario.js";
+import { readFile, writeFile } from "node:fs/promises";
 
 class RepositorioPublicaciones {
     constructor(ruta) {
@@ -24,18 +25,18 @@ class RepositorioPublicaciones {
                     d.autor,
                     d.categoria,
                 );
-                pub.fechaPublicacion = d.fechaPublicacion
+                pub.fechaPublicacion = d.fechaPublicacion;
                 pub.activa = d.activa;
                 pub.destacado = d.destacado;
                 pub.etiquetas = d.etiquetas;
                 pub.reportes = d.reporte;
                 pub.estado = d.estado;
-                
-                return pub
+
+                return pub;
             });
 
-            this.proximoId = Math.max(0, ...this.publicaciones.map((p) => p.id)) + 1;
-
+            this.proximoId =
+                Math.max(0, ...this.publicaciones.map((p) => p.id)) + 1;
         } catch (error) {
             // PASO 7B: si error.code === "ENOENT" el archivo no existe todavía:
             // crearlo vacío con guardar(). Cualquier otro error se relanza.
@@ -45,7 +46,15 @@ class RepositorioPublicaciones {
         // es necesario reconstruir las publicaciones con new Publicacion porque el JSON.parse te devuelve objetos planos
     }
 
-    agregar(titulo, descripcion, autor, categoria) {
+    async guardar() {
+        // PASO 8A: writeFile(this.ruta, JSON.stringify(this.publicaciones, null, 2),"utf8")
+        await writeFile(this.ruta, JSON.stringify(this.publicaciones, null, 2),"utf8")
+    }
+
+    // PASO 8C: aplicar el mismo cambio (async + await this.guardar())
+    // a actualizar(id, cambios) y a eliminar(id)
+    
+    async agregar(titulo, descripcion, autor, categoria) {
         const publicacion = new Publicacion(
             this.proximoId++,
             titulo,
@@ -54,6 +63,8 @@ class RepositorioPublicaciones {
             categoria,
         );
         this.publicaciones.push(publicacion);
+        // PASO 8B: await this.guardar() antes de devolver la publicación
+        await this.guardar()
         return publicacion;
     }
 
@@ -65,7 +76,7 @@ class RepositorioPublicaciones {
         return this.publicaciones.find((p) => p.id === Number(id));
     }
 
-    actualizar(id, cambios) {
+    async actualizar(id, cambios) {
         const anterior = this.buscarPorId(id);
         if (!anterior) throw new Error("Publicación inexistente");
         const actualizada = new Publicacion(
@@ -88,13 +99,15 @@ class RepositorioPublicaciones {
         actualizada.estado = anterior.estado;
 
         this.publicaciones[this.publicaciones.indexOf(anterior)] = actualizada;
+        await this.guardar()
         return actualizada;
     }
 
-    eliminar(id) {
+    async eliminar(id) {
         const publicacion = this.buscarPorId(id);
         if (!publicacion) return false;
         this.publicaciones.splice(this.publicaciones.indexOf(publicacion), 1);
+        await this.guardar()
         return true;
     }
 

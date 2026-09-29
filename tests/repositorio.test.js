@@ -3,9 +3,16 @@ import Publicacion from "../src/Publicacion.js";
 import PublicacionVenta from "../src/PublicacionVenta.js";
 import PublicacionServicio from "../src/PublicacionServicio.js";
 
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+ const carpeta = await mkdtemp(join(tmpdir(), "publicaciones-"));
+ const ruta = join(carpeta, "datos.json");
+
 describe("RepositorioPublicaciones", () => {
     test("buscarPorEtiqueta devuelve coincidencias activas", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         const publicacion = repositorio.buscarPorId(1)
         // const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
@@ -14,7 +21,7 @@ describe("RepositorioPublicaciones", () => {
         expect(repositorio.buscarPorEtiqueta("redes")).toEqual([publicacion]);
     });
     test("una publicación dada de baja queda excluida", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         const publicacion = repositorio.buscarPorId(1)
         // const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
@@ -24,7 +31,7 @@ describe("RepositorioPublicaciones", () => {
         expect(repositorio.buscarPorEtiqueta("redes")).toEqual([]);
     });
     test("una etiqueta inexistente devuelve un arreglo vacío", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         expect(repositorio.buscarPorEtiqueta("inexistente")).toEqual([]);
     });
 

@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "titulo": "Vendo apuntes",
+    "descripcion": "Vendo apuntes de matemática aplicada",
+    "autor": "martin",
+    "categoria": "compraventa",
+    "fechaPublicacion": "2026-09-29T21:17:29.720Z",
+    "activa": true,
+    "destacado": false,
+    "etiquetas": [],
+    "reportes": [],
+    "estado": "pendiente"
+  },
+  {
+    "id": 2,
+    "titulo": "Compro mochila",
+    "descripcion": "Compro mochila de gran tamaño para guardar los útiles",
+    "autor": "santi",
+    "categoria": "compraventa",
+    "fechaPublicacion": "2026-09-29T21:17:29.722Z",
+    "activa": true,
+    "destacado": false,
+    "etiquetas": [],
+    "reportes": [],
+    "estado": "pendiente"
+  },
+  {
+    "id": 3,
+    "titulo": "Busco profesor de guitarra",
+    "descripcion": "Quiero estudiar guitarra y busco un buen profesor",
+    "autor": "fabri",
+    "categoria": "aviso",
+    "fechaPublicacion": "2026-09-29T21:17:29.722Z",
+    "activa": false,
+    "destacado": false,
+    "etiquetas": [],
+    "reportes": [],
+    "estado": "pendiente"
+  }
+]

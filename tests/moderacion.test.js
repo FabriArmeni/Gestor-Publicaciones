@@ -1,5 +1,11 @@
 import Publicacion from "../src/Publicacion.js";
 import RepositorioPublicaciones from "../src/RepositorioPublicaciones.js";
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+ const carpeta = await mkdtemp(join(tmpdir(), "publicaciones-"));
+ const ruta = join(carpeta, "datos.json");
 
 describe("Publicacion · reportes", () => {
     test("una publicación nueva no requiere revisión", () => {
@@ -33,7 +39,7 @@ describe("Publicacion · reportes", () => {
 
 describe("RepositorioPublicaciones · pendientesDeRevision", () => {
     test("devuelve sólo publicaciones activas que requieren revisión", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         // const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         const publicacion = repositorio.buscarPorId(1)
@@ -46,7 +52,7 @@ describe("RepositorioPublicaciones · pendientesDeRevision", () => {
     });
     
     test("una publicación dada de baja queda excluida aunque requiera revisión", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         const publicacion = repositorio.buscarPorId(1)
         publicacion.reportar("bruno", "motivo 1");
@@ -58,7 +64,7 @@ describe("RepositorioPublicaciones · pendientesDeRevision", () => {
     });
     
     test("sin reportes suficientes no hay publicaciones pendientes", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         const publicacion = repositorio.buscarPorId(1)
         // const publicacion = new Publicacion(1, "Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
@@ -69,7 +75,7 @@ describe("RepositorioPublicaciones · pendientesDeRevision", () => {
 
     //Ej adicionales
     test("pendientesDeRevision() devuelve las publicaciones en el mismo orden en que fueron reportadas hasta cumplir el umbral", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         const publicacion1 = repositorio.buscarPorId(1)
@@ -89,7 +95,7 @@ describe("RepositorioPublicaciones · pendientesDeRevision", () => {
     })
     
     test("quitarReporte(usuario) quita el reporte del usuario", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         const publicacion1 = repositorio.buscarPorId(1)
         // const publicacion1 = new Publicacion(1, "Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");

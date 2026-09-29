@@ -1,19 +1,26 @@
 import RepositorioPublicaciones from "../src/RepositorioPublicaciones.js";
 
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+ const carpeta = await mkdtemp(join(tmpdir(), "publicaciones-"));
+ const ruta = join(carpeta, "datos.json");
+
 describe("RepositorioPublicaciones · CRUD", () => {
     let repositorio;
     beforeEach(() => {
-        repositorio = new RepositorioPublicaciones();
+        repositorio = new RepositorioPublicaciones(ruta);
     });
-    test("agregar asigna ids crecientes a partir de 1", () => {
+    test("agregar asigna ids crecientes a partir de 1", async() => {
         // PASO 6A
-        repositorio.agregar(
+        await repositorio.agregar(
             "vendoo",
             "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "juancito",
             "compraventa",
         );
-        repositorio.agregar(
+        await repositorio.agregar(
             "vendoo",
             "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "mengano",
@@ -22,15 +29,15 @@ describe("RepositorioPublicaciones · CRUD", () => {
         expect(repositorio.listar()[0].id).toBe(1);
         expect(repositorio.listar()[1].id).toBe(2);
     });
-    test("listar devuelve una copia: modificarla no afecta al repositorio", () => {
+    test("listar devuelve una copia: modificarla no afecta al repositorio", async() => {
         // PASO 6B
-        repositorio.agregar(
+        await repositorio.agregar(
             "vendoo",
             "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "juancito",
             "compraventa",
         );
-        repositorio.agregar(
+        await repositorio.agregar(
             "vendoo",
             "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "mengano",
@@ -40,27 +47,27 @@ describe("RepositorioPublicaciones · CRUD", () => {
         lista.pop()
         expect(repositorio.listar().length).toBe(2);
     });
-    test("actualizar con datos inválidos no modifica la colección", () => {
+    test("actualizar con datos inválidos no modifica la colección", async() => {
         // PASO 6C
-        repositorio.agregar(
+        await repositorio.agregar(
             "vendoo",
             "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "juancito",
             "compraventa",
         );
-        expect(() => repositorio.actualizar(1, {"titulo":""})).toThrow("El título debe tener entre 5 y 80 caracteres")
+        expect(async() => await repositorio.actualizar(1, {"titulo":""})).rejects.toThrow("El título debe tener entre 5 y 80 caracteres")
         expect(repositorio.buscarPorId(1).titulo).toBe("vendoo")
     });
-    test("eliminar una publicación inexistente devuelve false", () => {
+    test("eliminar una publicación inexistente devuelve false", async() => {
         // PASO 6D
-        expect(repositorio.eliminar(1)).toBe(false)
+        expect(await repositorio.eliminar(1)).toBe(false)
     });
 
     // Si actualizás sólo el título de una publicación que ya tenía 3 reportes acumulados,
     // ¿esos reportes deberían perderse? Fundamentá tu decisión en la resolución.
-    test("Si actualizas solo el titulo no se pierden los reportes", () => {
+    test("Si actualizas solo el titulo no se pierden los reportes", async() => {
         // PASO 6C
-        repositorio.agregar(
+        await repositorio.agregar(
             "vendoo",
             "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "juancito",

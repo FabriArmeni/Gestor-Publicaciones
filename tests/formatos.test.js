@@ -7,15 +7,25 @@ import {
 } from "../src/formatos";
 import RepositorioPublicaciones from "../src/RepositorioPublicaciones";
 
+
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+ const carpeta = await mkdtemp(join(tmpdir(), "publicaciones-"));
+ const ruta = join(carpeta, "datos.json");
+
+
+
 describe("formatos", () => {
-    test("convertirDesdeJSON(convertirAJSON(publicaciones)) es igual a publicaciones mapeado en paraExponer()", () => {
-        const repositorio = new RepositorioPublicaciones();
-        repositorio.agregar(
+    test("convertirDesdeJSON(convertirAJSON(publicaciones)) es igual a publicaciones mapeado en paraExponer()", async () => {
+        const repositorio = new RepositorioPublicaciones(ruta);
+        await repositorio.agregar(
             "Apuntes de Redes",
             "Contenido valido de mas de 20 caracteres",
             "Anabella",
         );
-        repositorio.agregar(
+        await repositorio.agregar(
             "Apuntes de Redes",
             "Contenido valido de mas de 20 caracteres",
             "Anabella",
@@ -25,9 +35,9 @@ describe("formatos", () => {
         expect(conversion).toEqual(publicaciones.map(paraExponer));
     });
 
-    test('Una publicación con autor "Ana & Cía" y título "Apuntes <avanzados>" debe producir un XML que contenga &amp; y &lt;, nunca el & o el < sin escapar.', () => {
-        const repositorio = new RepositorioPublicaciones();
-        repositorio.agregar(
+    test('Una publicación con autor "Ana & Cía" y título "Apuntes <avanzados>" debe producir un XML que contenga &amp; y &lt;, nunca el & o el < sin escapar.', async () => {
+        const repositorio = new RepositorioPublicaciones(ruta);
+        await repositorio.agregar(
             "Apuntes <avanzados>",
             "Contenido valido de mas de 20 caracteres",
             "Ana & Cía",
@@ -42,9 +52,9 @@ describe("formatos", () => {
 });
 
 describe("Testing adicional", () => {    
-    test("Ida y vuelta de JSON: convertirDesdeJSON(convertirAJSON(x)) debe ser igual a x (después de paraExponer)", () => {
-        const repositorio = new RepositorioPublicaciones();
-        repositorio.agregar(
+    test("Ida y vuelta de JSON: convertirDesdeJSON(convertirAJSON(x)) debe ser igual a x (después de paraExponer)", async () => {
+        const repositorio = new RepositorioPublicaciones(ruta);
+        await repositorio.agregar(
             "Apuntes <avanzados>",
             "Contenido valido de mas de 20 caracteres",
             "Ana & Cía",
@@ -63,9 +73,9 @@ describe("Testing adicional", () => {
         expect(convertirAJSON([])).toBe("[]");
     });
 
-    test("Caracteres reservados en XML: un autor con &, <, > o comillas no debe romper la estructura", () => {
-        const repositorio = new RepositorioPublicaciones();
-        repositorio.agregar(`< 'compro' & "vendo" >`, "Contenido valido de mas de 20 caracteres", "juancito", "compraventa")
+    test("Caracteres reservados en XML: un autor con &, <, > o comillas no debe romper la estructura", async () => {
+        const repositorio = new RepositorioPublicaciones(ruta);
+        await repositorio.agregar(`< 'compro' & "vendo" >`, "Contenido valido de mas de 20 caracteres", "juancito", "compraventa")
         const xml = convertirAXML(repositorio.listar());
         expect(xml).toContain("&amp;");
         expect(xml).toContain("&lt;");

@@ -42,10 +42,37 @@ function esperar(ms) {
     });
 }
 
-const repositorio = new RepositorioPublicaciones();
-
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const RUTA_DATOS = path.join(__dirname, "data", "publicaciones.json");
+const repositorio = new RepositorioPublicaciones(RUTA_DATOS);
+
+await repositorio.cargar(); // PASO 8D: cargar antes de escuchar solicitudes
+if (repositorio.listar().length === 0) {
+    // sembrar datos de ejemplo sólo la primera vez
+    await repositorio.agregar(
+        "Vendo apuntes",
+        "Vendo apuntes de matemática aplicada",
+        "martin",
+        "compraventa",
+    );
+    await repositorio.agregar(
+        "Compro mochila",
+        "Compro mochila de gran tamaño para guardar los útiles",
+        "santi",
+        "compraventa",
+    );
+    const pub3 = await repositorio.agregar(
+        "Busco profesor de guitarra",
+        "Quiero estudiar guitarra y busco un buen profesor",
+        "fabri",
+        "aviso",
+    );
+    pub3.activa = false;
+    await repositorio.guardar();
+}
+
 
 // Middlewares
 app.use(express.urlencoded({ extended: false }));
@@ -55,14 +82,14 @@ app.use("/src", express.static(path.join(__dirname, "src")));
 // Rutas
 app.get("/datos/publicaciones.json", (req, res) => {
     // PASO 4A: res.json(...) — Express arma el Content-Type application/json solo
-    const publicaciones = repositorio.listar().map(paraExponer)
-    res.json(publicaciones)
+    const publicaciones = repositorio.listar().map(paraExponer);
+    res.json(publicaciones);
 });
 
 app.get("/datos/publicaciones.xml", (req, res) => {
     // PASO 4B: res.type("application/xml").send(...)
-    const publicaciones = repositorio.listar().map(paraExponer)
-    res.type("application/xml").send(convertirAXML(publicaciones))
+    const publicaciones = repositorio.listar().map(paraExponer);
+    res.type("application/xml").send(convertirAXML(publicaciones));
 });
 
 // PASO 5C: montar el router, pasándole la MISMA instancia de repositorio
