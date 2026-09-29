@@ -4,9 +4,45 @@ import PublicacionVenta from "./PublicacionVenta.js";
 import Usuario from "./Usuario.js";
 
 class RepositorioPublicaciones {
-    constructor() {
+    constructor(ruta) {
+        this.ruta = ruta;
         this.publicaciones = []; //arreglo de objetos Publicacion
         this.proximoId = 1;
+    }
+
+    async cargar() {
+        try {
+            // PASO 7A: leer con readFile(this.ruta, "utf8"), JSON.parse,
+            // reconstruir cada Publicacion (no queda con mostrarResumen si no lo hacés),
+            // y recalcular this.proximoId como el máximo id + 1
+            const data = JSON.parse(await readFile(this.ruta, "utf8"));
+            this.publicaciones = data.map((d) => {
+                const pub = new Publicacion(
+                    d.id,
+                    d.titulo,
+                    d.descripcion,
+                    d.autor,
+                    d.categoria,
+                );
+                pub.fechaPublicacion = d.fechaPublicacion
+                pub.activa = d.activa;
+                pub.destacado = d.destacado;
+                pub.etiquetas = d.etiquetas;
+                pub.reportes = d.reporte;
+                pub.estado = d.estado;
+                
+                return pub
+            });
+
+            this.proximoId = Math.max(0, ...this.publicaciones.map((p) => p.id)) + 1;
+
+        } catch (error) {
+            // PASO 7B: si error.code === "ENOENT" el archivo no existe todavía:
+            // crearlo vacío con guardar(). Cualquier otro error se relanza.
+            if (error.code !== "ENOENT") throw error;
+            await this.guardar();
+        }
+        // es necesario reconstruir las publicaciones con new Publicacion porque el JSON.parse te devuelve objetos planos
     }
 
     agregar(titulo, descripcion, autor, categoria) {
