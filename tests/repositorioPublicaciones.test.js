@@ -55,4 +55,22 @@ describe("RepositorioPublicaciones · CRUD", () => {
         // PASO 6D
         expect(repositorio.eliminar(1)).toBe(false)
     });
+
+    // Si actualizás sólo el título de una publicación que ya tenía 3 reportes acumulados,
+    // ¿esos reportes deberían perderse? Fundamentá tu decisión en la resolución.
+    test("Si actualizas solo el titulo no se pierden los reportes", () => {
+        // PASO 6C
+        repositorio.agregar(
+            "vendoo",
+            "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "juancito",
+            "compraventa",
+        );
+        const publicacion = repositorio.buscarPorId(1)
+        publicacion.reportar("pepito","titulo poco descriptivo")
+        publicacion.reportar("maria","titulo poco descriptivo")
+        publicacion.reportar("rosa","titulo poco descriptivo")
+        repositorio.actualizar(1, {"titulo":"vendo todo!"})
+        expect(repositorio.buscarPorId(1).reportes.length).toBe(3)
+    });
 });
