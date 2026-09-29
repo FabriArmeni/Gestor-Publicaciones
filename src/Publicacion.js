@@ -3,14 +3,13 @@ import Reporte from "./Reporte.js";
 export const CATEGORIAS_PERMITIDAS = ["general", "aviso", "evento", "compraventa"];
 
 export default class Publicacion {
-    static contador = 1;
 
     constructor(id, titulo, descripcion, autor, categoria = "general") {
-        const tituloNormalizado = titulo?.trim() ?? ""
         if(!autor?.trim()) {
             throw new Error("El autor es obligatorio")
         }
 
+        const tituloNormalizado = titulo?.trim() ?? ""
         if(tituloNormalizado.length < 5 || tituloNormalizado.length > 80) {
             throw new Error("El título debe tener entre 5 y 80 caracteres")
         }
@@ -24,12 +23,11 @@ export default class Publicacion {
             throw new Error(`La categoría debe ser una de: ${CATEGORIAS_PERMITIDAS.join(", ")}`)
         }
 
-        this.id = id ?? Publicacion.contador++;
+        this.id = id;
         this.titulo = tituloNormalizado;
         this.descripcion = descripcionNormalizado;
         this.autor = autor.trim(); // antes era obj Usuario ahora con los ej quedó como string
         this.categoria = categoria
-
         this.fechaPublicacion = new Date();
         this.activa = true;
         this.destacado = false;
@@ -63,7 +61,7 @@ export default class Publicacion {
     }
 
     get resumen() {
-        return `Titulo: "${this.titulo}" - Autor: ${this.autor.nombre} - Estado: ${this.activa}`;
+        return `Autor: ${this.autor.nombre} - Titulo: "${this.titulo}" - Estado: ${this.activa}`;
     }
 
     agregarEtiqueta(etiqueta) {

@@ -1,19 +1,16 @@
 import Publicacion from "./Publicacion.js";
 
 class PublicacionVenta extends Publicacion {
-    constructor(id, titulo, descripcion, autor, categoria = "compraventa", precio) {
-        super(id, titulo, descripcion, autor, categoria)
-
-        if (typeof precio !== "number" || precio <= 0) {
-            throw new Error("El precio debe ser mayor a 0")
-        }
-
+    constructor(id, titulo,descripcion, autor, precio) {
+        super(id, titulo, descripcion, autor)
         this.precio = precio
         this.stock = 1
     }
 
-    get resumen(){
-        return `${super.resumen} - Precio: $${this.precio}`;
+    mostrarResumen(){
+        let base = super.mostrarResumen()
+        base += ` - Precio: ${this.precio}`
+        return base
     }
 }
 

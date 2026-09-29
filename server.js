@@ -3,35 +3,118 @@ import path from "path";
 import { fileURLToPath } from "url";
 import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
 import crearRouterPublicaciones from "./routes/publicaciones.routes.js";
-import { paraExponer, convertirAXML } from "./src/formatos.js"
+import { paraExponer, convertirAXML } from "./src/formatos.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const RUTA_DATOS = path.join(__dirname, "data", "publicaciones.json");
+const publicaciones = [
+    {
+        titulo: "Vendo apuntes",
+        descripcion: "apuntes de mateeeeeeeeee",
+        autor: { nombre: "martin", email: "mar@tin.com" },
+        precio: 2000,
+    },
+    {
+        titulo: "Vendo libro",
+        descripcion: "libro de anatomiaaaaaaaaaaa",
+        autor: { nombre: "fabricio", email: "fabri@cio.com" },
+        precio: 2000,
+    },
+    {
+        titulo: "Clase consulta",
+        descripcion: "antes del examennnnnnnnnnnn",
+        autor: { nombre: "santiago", email: "santi@alejo.com" },
+        modalidad: "presencial",
+        duracionMinutos: 120,
+        cliente: { nombre: "fabricio", email: "fabri@cio.com" },
+    },
+    {
+        titulo: "Dibujo caratula",
+        descripcion: "para cada materiaaaaaaaaaaaa",
+        autor: { nombre: "juan", email: "juan@juan.com" },
+        modalidad: "presencial",
+        duracionMinutos: 120,
+        cliente: { nombre: "martin", email: "mar@tin.com" },
+    },
+];
 
-const repositorio = new RepositorioPublicaciones(RUTA_DATOS);
-await repositorio.cargar();
+function esperar(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
 const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-//Middlewares
-app.use(express.json()); //NECESARIO: Procesa JSON en los POST/PUT
+const RUTA_DATOS = path.join(__dirname, "data", "publicaciones.json");
+const repositorio = new RepositorioPublicaciones(RUTA_DATOS);
+
+await repositorio.cargar(); // PASO 8D: cargar antes de escuchar solicitudes
+if (repositorio.listar().length === 0) {
+    // sembrar datos de ejemplo sólo la primera vez
+    await repositorio.agregar(
+        "Vendo apuntes",
+        "Vendo apuntes de matemática aplicada",
+        "martin",
+        "compraventa",
+    );
+    await repositorio.agregar(
+        "Compro mochila",
+        "Compro mochila de gran tamaño para guardar los útiles",
+        "santi",
+        "compraventa",
+    );
+    const pub3 = await repositorio.agregar(
+        "Busco profesor de guitarra",
+        "Quiero estudiar guitarra y busco un buen profesor",
+        "fabri",
+        "aviso",
+    );
+    pub3.activa = false;
+    await repositorio.guardar();
+}
+
+
+// Middlewares
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/src", express.static(path.join(__dirname, "src")));
 
-app.use("/publicaciones", crearRouterPublicaciones(repositorio));
-
-//Endpoints
+// Rutas
 app.get("/datos/publicaciones.json", (req, res) => {
-    const publicas = repositorio.listar().map(paraExponer);
-    res.json(publicas);
+    // PASO 4A: res.json(...) — Express arma el Content-Type application/json solo
+    const publicaciones = repositorio.listar().map(paraExponer);
+    res.json(publicaciones);
 });
 
 app.get("/datos/publicaciones.xml", (req, res) => {
-    const xmlText = convertirAXML(repositorio.listar());
-    res.type("application/xml").send(xmlText);
+    // PASO 4B: res.type("application/xml").send(...)
+    const publicaciones = repositorio.listar().map(paraExponer);
+    res.type("application/xml").send(convertirAXML(publicaciones));
 });
 
-app.listen(3000, () => {
-    console.log("Servidor en http://localhost:3000")
+// PASO 5C: montar el router, pasándole la MISMA instancia de repositorio
+// que ya usan /estado-comunidad y /estado-inactivas
+app.use("/publicaciones", crearRouterPublicaciones(repositorio));
+
+app.get("/estado-comunidad", async (req, res) => {
+    await esperar(900); // para simular delay y que se vea el "Consultando...""
+    res.send(repositorio.obtenerEstado());
 });
+
+app.get("/estado-inactivas", async (req, res) => {
+    await esperar(900);
+    res.send(repositorio.obtenerEstadoInactivas());
+});
+
+// app.get("/api/publicaciones", async (req, res) => {
+//     await esperar(900);
+//     if (req.query.error === "1")
+//         return res
+//             .status(500)
+//             .json({ mensaje: "No pudimos consultar las publicaciones" });
+//     res.json(publicaciones);
+// });
+
+app.listen(3000, () =>
+    console.log("Repositorio publicaciones en http://localhost:3000"),
+);

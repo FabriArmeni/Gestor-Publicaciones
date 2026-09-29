@@ -3,51 +3,51 @@ import Publicacion from "../src/Publicacion.js";
 import PublicacionVenta from "../src/PublicacionVenta.js";
 import PublicacionServicio from "../src/PublicacionServicio.js";
 
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+ const carpeta = await mkdtemp(join(tmpdir(), "publicaciones-"));
+ const ruta = join(carpeta, "datos.json");
+
 describe("RepositorioPublicaciones", () => {
     test("buscarPorEtiqueta devuelve coincidencias activas", () => {
-        const repositorio = new RepositorioPublicaciones();
-        const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
+        const repositorio = new RepositorioPublicaciones(ruta);
+        repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
+        const publicacion = repositorio.buscarPorId(1)
+        // const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         publicacion.agregarEtiqueta("redes");
-        repositorio.agregar(publicacion);
+        // repositorio.agregar(publicacion);
         expect(repositorio.buscarPorEtiqueta("redes")).toEqual([publicacion]);
     });
     test("una publicación dada de baja queda excluida", () => {
-        const repositorio = new RepositorioPublicaciones();
-        const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
+        const repositorio = new RepositorioPublicaciones(ruta);
+        repositorio.agregar("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
+        const publicacion = repositorio.buscarPorId(1)
+        // const publicacion = new Publicacion("Apuntes de Redes", "Contenido valido de mas de 20 caracteres", "Anabella");
         publicacion.agregarEtiqueta("redes");
         publicacion.darDeBaja();
-        repositorio.agregar(publicacion);
+        // repositorio.agregar(publicacion);
         expect(repositorio.buscarPorEtiqueta("redes")).toEqual([]);
     });
     test("una etiqueta inexistente devuelve un arreglo vacío", () => {
-        const repositorio = new RepositorioPublicaciones();
+        const repositorio = new RepositorioPublicaciones(ruta);
         expect(repositorio.buscarPorEtiqueta("inexistente")).toEqual([]);
     });
 
     // parte 7
-test("cada subclase arma su propio resumen", () => {
-    // Agregamos null en la posición del id
-    const venta = new PublicacionVenta(
-        null, 
-        "Calculadora", 
-        "Contenido valido de mas de 20 caracteres", 
-        "Anabella", 
-        "compraventa", 
-        5000
-    );
-
-    const servicio = new PublicacionServicio(
-        null,
-        "Clases de Álgebra",
-        "Contenido valido de mas de 20 caracteres",
-        "Luis",
-        "servicios",
-        "presencial",
-        120,
-        { nombre: "juan", email: "juan@gmail.com" }
-    );
-
-    expect(venta.resumen).toContain("5000");
-    expect(servicio.resumen).toContain("Clases de Álgebra");
-});
+    test("cada subclase arma su propio resumen", () => {
+        const venta = new PublicacionVenta(1, "Calculadora", "Contenido valido de mas de 20 caracteres", "Anabella", 5000);
+        const servicio = new PublicacionServicio(
+            2,
+            "Clases de Álgebra",
+            "Contenido valido de mas de 20 caracteres",
+            "Luis",
+            "presencial",
+            120,
+            { nombre: "juan", email: "juan@gmail.com" },
+        );
+        expect(venta.mostrarResumen()).toContain("5000");
+        expect(servicio.mostrarResumen()).toContain("Clases de Álgebra");
+    });
 });

@@ -168,22 +168,24 @@ function manejarAccion(evento) {
     renderizarPublicaciones();
 }
 
-async function cargarPublicaciones() {
-    estado.textContent = "Cargando publicaciones... ";
+async function cargarPublicaciones(forzarError = false) {
+    estado.textContent = "Cargando publicaciones...";
     botonActualizar.disabled = true;
-
     try {
-        const respuesta = await fetch("/publicaciones");
+        const url = forzarError
+            ? "/api/publicaciones?error=1"
+            : "/api/publicaciones";
+        const respuesta = await fetch(url);
         if (!respuesta.ok) {
-            throw new Error("No se pudieron obtener las publicaciones del servidor");
+            throw new Error("La respuesta no fue exitosa");
         }
-
         const datos = await respuesta.json();
-        renderizarPublicaciones(datos);
-        estado.textContent = `${datos.length} publicaciones cargadas`;
-    }   catch (error) {
+        repositorio.cargarDesde(datos);
+        renderizarPublicaciones();
+        estado.textContent = `${datos.length} publicaciones recibidas`;
+    } catch (error) {
         estado.textContent = `Error: ${error.message}`;
-    }   finally {
+    } finally {
         botonActualizar.disabled = false;
     }
 }
@@ -287,39 +289,5 @@ form2.addEventListener("submit", async (e) => {
 
     salida.textContent = await respuesta.text()
     salida.dataset.tipo = respuesta.ok ? "exito" : "error"
-    if (respuesta.ok) {
-        form2.reset();
-        await cargarPublicaciones();
-    }
+    if (respuesta.ok) form2.reset()
 })
-
-//Diagnostico JSON
-const btnJson = document.querySelector("#ver-json");
-if (btnJson) {
-    btnJson.addEventListener("click", async () => {
-        const texto = await fetch("/datos/publicaciones.json").then(r => r.text());
-        const lista = JSON.parse(texto);
-        mostrarDiagnostico(lista);
-    });
-}
-
-//Diagnostico XML
-const btnXml = document.querySelector("#ver-xml");
-if (btnXml) {
-    btnXml.addEventListener("click", async () => {
-        const texto = await fetch("/datos/publicaciones.xml").then(r => r.text());
-        const xmlDoc = new DOMParser().parseFromString(texto, "application/xml");
-        const nodos = xmlDoc.querySelectorAll("publicacion");
-
-        const lista = Array.from(nodos).map(nodo => ({
-            id: nodo.getAttribute("id"),
-            autor: nodo.querySelector("autor")?.textContent ?? "",
-            titulo: nodo.querySelector("titulo")?.textContent ?? "",
-            descripcion: nodo.querySelector("descripcino")?.textContent ?? "",
-            categori: nodo.querySelector("categoria")?.textContent ?? ""
-
-        }));
-
-        mostrarDiagnostico(lista);
-    })
-}

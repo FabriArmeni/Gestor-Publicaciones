@@ -11,7 +11,7 @@
 <body>
   <main>
     <h1>Gestor de Publicaciones</h1>
-    <!-- <form id="form-publicacion">
+    <form id="form-publicacion">
       <h2>Crear una nueva publicación</h2>
       <div class="input-group">
         <label for="titulo">Titulo:</label>
@@ -61,8 +61,8 @@
       <button id="consultarInactivas" type="button">Consultar Inactivas</button>
     </div>
     <p id="estado"></p>
-    <section id="lista-publicaciones"></section> -->
-    
+    <section id="lista-publicaciones"></section>
+
     <form id="pedido" action="/publicaciones" method="post">
       <label>Título <input name="titulo" minlength="5" maxlength="80" required></label>
       <label>Descripción <textarea name="descripcion" minlength="20" maxlength="500" required></textarea></label>
@@ -78,18 +78,10 @@
       <button>Publicar</button>
     </form>
     <p id="salida"></p>
-    <section id="lista-publicaciones"></section>
 
-    <section id="diagnostico-formatos">
-        <h2>Diagnóstico de formatos</h2>
-        <button type="button" id="ver-json">Ver JSON</button>
-        <button type="button" id="ver-xml">Ver XML</button>
-        <pre id="texto"></pre>
-        <ul id="lista-diagnostico"></ul>
-    </section>
 
   </main>
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

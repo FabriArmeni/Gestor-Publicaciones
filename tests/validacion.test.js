@@ -10,6 +10,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
         expect(
             () =>
                 new Publicacion(
+                    1,
                     titulo,
                     "Contenido válido de más de veinte caracteres.",
                     "Ana",
@@ -27,6 +28,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
         "un titulo %s es valido por estar dentro del rango",
         (titulo, resultado) => {
             const publi = new Publicacion(
+                1,
                 titulo,
                 "Contenido valido de mas de 20 caracteres",
                 "josé",
@@ -43,7 +45,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
     ])("una descripcion %s (%s) lanza el error esperado", (descripcion) => {
         expect(
             () =>
-                new Publicacion("Titulo de la publicacion", descripcion, "Ana"),
+                new Publicacion(1, "Titulo de la publicacion", descripcion, "Ana"),
         ).toThrow("La descripcion debe tener entre 20 y 500 caracteres");
     });
 
@@ -57,6 +59,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
         "una descripcion %s es valida por estar dentro del rango",
         (descripcion, resultado) => {
             const publi = new Publicacion(
+                1,
                 "Titulo de la publicacion",
                 descripcion,
                 "josé",
@@ -74,6 +77,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
         expect(
             () =>
                 new Publicacion(
+                    1,
                     "Titulo de la publicacion",
                     "Contenido válido de más de veinte caracteres.",
                     autor,
@@ -89,6 +93,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
         "un autor %s es valido por no ser solo espacios ni vacio",
         (autor, resultado) => {
             const publi = new Publicacion(
+                1,
                 "Titulo de la publicacion",
                 "Contenido válido de más de veinte caracteres.",
                 autor,
@@ -103,6 +108,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
         expect(
             () =>
                 new Publicacion(
+                    1,
                     "Titulo de la publicacion",
                     "Contenido válido de más de veinte caracteres.",
                     "autor",
@@ -118,6 +124,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
         `La categoría es valida si es una de: ${CATEGORIAS_PERMITIDAS.join(", ")}`,
         (categoria) => {
             const publi = new Publicacion(
+                1,
                 "Titulo de la publicacion",
                 "Contenido válido de más de veinte caracteres.",
                 "autor",
@@ -128,6 +135,7 @@ describe("validaciones en el servidor al crear una publicacion", () => {
     );
     test("si no se ingresa la categoria es general por defecto", () => {
         const publi = new Publicacion(
+            1,
             "Titulo de la publicacion",
             "Contenido válido de más de veinte caracteres.",
             "autor",
