@@ -2,8 +2,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import RepositorioPublicaciones from "./src/RepositorioPublicaciones.js";
-import Publicacion from "./src/Publicacion.js";
 import crearRouterPublicaciones from "./routes/publicaciones.routes.js";
+import { paraExponer, convertirAXML } from "./src/formatos.js";
 
 const publicaciones = [
     {
@@ -42,7 +42,7 @@ function esperar(ms) {
     });
 }
 
-const repositorio = new RepositorioPublicaciones()
+const repositorio = new RepositorioPublicaciones();
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -53,20 +53,31 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/src", express.static(path.join(__dirname, "src")));
 
 // Rutas
+app.get("/datos/publicaciones.json", (req, res) => {
+    // PASO 4A: res.json(...) — Express arma el Content-Type application/json solo
+    const publicaciones = repositorio.listar().map(paraExponer)
+    res.json(publicaciones)
+});
+
+app.get("/datos/publicaciones.xml", (req, res) => {
+    // PASO 4B: res.type("application/xml").send(...)
+    const publicaciones = repositorio.listar().map(paraExponer)
+    res.type("xml").send(convertirAXML(publicaciones))
+});
 
 // PASO 5C: montar el router, pasándole la MISMA instancia de repositorio
 // que ya usan /estado-comunidad y /estado-inactivas
 app.use("/publicaciones", crearRouterPublicaciones(repositorio));
 
 app.get("/estado-comunidad", async (req, res) => {
-    await esperar(900) // para simular delay y que se vea el "Consultando...""
+    await esperar(900); // para simular delay y que se vea el "Consultando...""
     res.send(repositorio.obtenerEstado());
 });
 
-app.get("/estado-inactivas", async(req,res) => {
-    await esperar(900)
-    res.send(repositorio.obtenerEstadoInactivas())
-})
+app.get("/estado-inactivas", async (req, res) => {
+    await esperar(900);
+    res.send(repositorio.obtenerEstadoInactivas());
+});
 
 // app.get("/api/publicaciones", async (req, res) => {
 //     await esperar(900);

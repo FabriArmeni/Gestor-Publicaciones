@@ -3,6 +3,7 @@ export function paraExponer(publicacion) {
         id: publicacion.id,
         titulo: publicacion.titulo,
         descripcion: publicacion.descripcion,
+        autor: publicacion.autor,
         categoria: publicacion.categoria,
         activa: publicacion.activa,
         etiquetas: publicacion.etiquetas,
