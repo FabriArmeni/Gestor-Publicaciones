@@ -80,4 +80,14 @@ describe("RepositorioPublicaciones · CRUD", () => {
         repositorio.actualizar(1, {"titulo":"vendo todo!"})
         expect(repositorio.buscarPorId(1).reportes.length).toBe(3)
     });
+    test("filtra por etiqueta", async() => {
+        const publicacion = await repositorio.agregar(
+            "vendoo",
+            "ventaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "juancito",
+            "compraventa",
+        );
+        publicacion.agregarEtiqueta("test")
+        expect(repositorio.filtrar({autor: "juancito", categoria: "compraventa", etiqueta: "test"})).toEqual([publicacion])
+    })
 });

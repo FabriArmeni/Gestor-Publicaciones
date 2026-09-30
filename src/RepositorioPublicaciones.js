@@ -198,25 +198,19 @@ class RepositorioPublicaciones {
 
     filtrar({ autor, categoria, etiqueta }) {
         let filtrado = [...this.publicaciones].filter(pub => {
-            let coincide = true
+            
             if(autor && pub.autor !== autor) {
-                coincide = false
+                return false
             }
             if(categoria && pub.categoria !== categoria) {
-                coincide = false                
+                return false
             }
-            if(etiqueta) {
-                // tieneEtiqueta()
-                if(pub.autor !== autor){
-                    coincide = false
-                }
+            if(etiqueta && !pub.tieneEtiqueta(etiqueta)) {
+                return false
             }
-                
-
-            if (coincide) {
-                return pub
-            }
+            return true
         })
+        return filtrado
     }
 }
 

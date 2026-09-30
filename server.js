@@ -82,7 +82,7 @@ app.use("/src", express.static(path.join(__dirname, "src")));
 
 // Routers
 app.use("/api/publicaciones", crearRouterPublicaciones(repositorio));
-app.use("/api/libros", crearRouterLibros(servicioLibros));
+// app.use("/api/libros", crearRouterLibros(servicioLibros));
 
 // Rutas
 app.get("/datos/publicaciones.json", (req, res) => {
